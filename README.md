@@ -1,39 +1,82 @@
-Project Proposal: Image Restoration using Imputation Techniques
+# Image Restoration using Imputation Techniques
 
+## Description of the Project
+This project focuses on restoring corrupted images represented as matrices with missing pixel values. We will explore various imputation techniques such as mean, median, mode, Singular Value Decomposition (SVD), and more advanced methods such as matrix factorization and deep learning (e.g., autoencoders). The goal is to fill the missing pixels and evaluate which method yields the best restoration based on both visual quality and quantitative metrics like Peak Signal-to-Noise Ratio (PSNR) and Structural Similarity Index (SSIM).
 
-Description of the Project
+## Clear Goal(s)
+- Successfully restore corrupted images by filling missing pixel values using various imputation techniques.
+- Compare the effectiveness of basic statistical methods (mean, median, mode), matrix factorization, and autoencoders.
+- Measure performance based on visual inspection and quantitative metrics (e.g., PSNR, SSIM).
 
-This project focuses on restoring corrupted images represented as matrices with missing entries. The goal is to explore various imputation methods such as mean, median, mode, and Singular Value Decomposition (SVD) to fill in the missing values, and evaluate which method provides the best visual restoration. The project will involve collecting a dataset of images, corrupting them by removing random pixel values, and then applying different imputation techniques to recover the missing pixels.
+## Data Collection
+We will use publicly available image datasets such as CIFAR-10 and MNIST. To simulate corrupted images, we will randomly remove pixel values, replacing them with placeholders (e.g., `NaN`). These datasets will serve as our training and testing ground for the various imputation techniques.
 
-Clear Goal(s)
+## How We Plan on Modeling the Data
+We will model the data using a combination of statistical imputation methods and machine learning techniques:
 
-The primary goal of this project is to successfully restore corrupted images by filling in missing pixels using different imputation methods. The performance of these methods will be evaluated based on how well they restore the images to their original form, using both visual inspection and quantitative metrics such as Peak Signal-to-Noise Ratio (PSNR) and Structural Similarity Index Measure (SSIM).
+1. **Mean, Median, Mode Imputation**: Use simple statistical methods to fill missing pixels based on neighboring pixel values.
+2. **Singular Value Decomposition (SVD)**: Use SVD to approximate missing pixel values based on the relationships between known pixel values.
+3. **Matrix Factorization**: Implement matrix factorization, treating the image as a low-rank matrix. We will train the model to predict the missing pixel values based on the known ones.
+4. **Autoencoders (Deep Learning)**: Train an autoencoder to reconstruct images by learning a compressed representation of the corrupted images and generating missing pixels as output.
 
-Data Collection
+The machine learning-based methods will require training on a portion of the dataset to learn patterns and relationships between pixel values.
 
-The dataset will be collected from publicly available image databases such as CIFAR-10, MNIST, or ImageNet, depending on the project’s scope. The corruption process will be simulated by randomly removing pixel values from the images, representing these missing values with a placeholder (e.g., NaN).
+## Data Visualization
+We plan to visualize the results through:
+- **Side-by-Side Image Comparisons**: Display the original, corrupted, and restored images for each imputation method.
+- **Quantitative Metric Plots**: Plot PSNR and SSIM scores to compare the performance of different methods.
+- **Heatmaps**: Visualize the locations of missing pixels and their imputed values.
+- **Interactive Visualizations**: Create interactive plots to allow the user to explore the impact of different imputation methods.
 
-How I Plan on Modeling the Data
-
-The project will model the missing data using several imputation techniques:
-
-- Mean Imputation: Filling missing pixels with the mean value of neighboring pixels.
-- Median Imputation: Filling missing pixels with the median value of neighboring pixels.
-- Mode Imputation: Using the most frequent value from neighboring pixels to fill missing data.
-- SVD Imputation: Using Singular Value Decomposition to approximate missing pixel values based on the relationships between known pixel values.
+## Test Plan
+We will divide the dataset into training and testing sets:
+- **80% for Training**: This will be used to train models like matrix factorization and autoencoders.
+- **20% for Testing**: This will serve as our evaluation set for the imputation methods. The corrupted version of this test set will not have the same corruption pattern as the training data to test generalization.
   
-The imputation methods may be extended with more advanced techniques (e.g., matrix factorization or deep learning models like autoencoders) if time permits.
+We will use cross-validation for parameter tuning, particularly for the matrix factorization and autoencoder models, to ensure they generalize well to unseen data.
 
-Data Visualization
+## Timeline
+### Week 1 (10/1 - 10/7)
+- Submit the project proposal.
+- Begin collecting datasets (CIFAR-10, MNIST) and finalize the corruption process.
 
-I will visualize the results using several methods:
+### Week 2 (10/8 - 10/14)
+- Implement the data corruption process and prepare the dataset.
+- Begin implementing basic imputation methods (mean, median, mode).
 
-- Side-by-Side Image Comparisons: Display the original image, corrupted image, and restored image for each method.
-- Quantitative Metrics (e.g., PSNR, SSIM): These will be plotted to provide a numerical comparison of the performance of different imputation methods.
-- Interactive Heatmaps: To show the locations of the missing pixels and the values used for imputation.
+### Week 3 (10/15 - 10/21)
+- Finalize the implementation of SVD imputation.
+- Generate preliminary visualizations of corrupted and restored images.
 
-  
-Test Plan
+### Week 4 (10/22 - 10/28)
+- Implement matrix factorization for imputation.
+- Continue refining visualizations and collect initial results.
 
-The dataset will be divided into training and testing sets. Specifically, 80% of the images will be used for training the models and fine-tuning the imputation methods, while the remaining 20% will be used for testing and evaluation. The test set will not be corrupted in the same manner as the training set to ensure the model generalizes well to different types of missing data.
+### Week 5 (10/29 - 11/4)
+- Implement autoencoder-based imputation.
+- Prepare for the midterm report and presentation.
 
+### Midterm Report (Due 11/5)
+- Submit README.md with preliminary visualizations, descriptions of data processing, modeling methods used so far, and preliminary results.
+- Record and upload a 5-minute presentation summarizing the project progress.
+
+### Week 6-7 (11/6 - 11/18)
+- Further refine matrix factorization and autoencoder models.
+- Explore additional advanced techniques, if time permits.
+
+### Week 8-9 (11/19 - 12/2)
+- Test the models on the withheld test set.
+- Finalize visualizations and prepare the final code repository.
+
+### Week 10 (12/3 - 12/10)
+- Finalize and submit the project report, including:
+  - Instructions on how to build and run the code, using a `Makefile`.
+  - Test code and a GitHub workflow for automating testing.
+  - Final visualizations and results.
+
+## Final Report (Due 12/10)
+- Ensure that the `README.md` includes:
+  - Instructions for building and running the project.
+  - Testing code and automated workflow in the GitHub repo.
+  - Detailed descriptions of the data processing and modeling steps.
+  - Final visualizations and results demonstrating the success of the imputation methods.
