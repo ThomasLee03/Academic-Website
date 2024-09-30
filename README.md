@@ -1,7 +1,7 @@
 # Image Restoration using Imputation Techniques
 
 ## Description of the Project
-This project focuses on restoring corrupted images represented as matrices with missing pixel values. I will explore various imputation techniques such as mean, median, mode, Singular Value Decomposition (SVD), and more advanced methods such as matrix factorization and deep learning (e.g., autoencoders). The goal is to fill the missing pixels and evaluate which method yields the best restoration based on both visual quality and quantitative metrics like Peak Signal-to-Noise Ratio (PSNR) and Structural Similarity Index (SSIM).
+This project focuses on restoring corrupted images represented as matrices with missing pixel values. I will explore various imputation techniques such as mean, median, mode, Singular Value Decomposition (SVD), and more advanced methods such as total variation image in-painting. The goal is to fill the missing pixels and evaluate which method yields the best restoration based on both visual quality and quantitative metrics like Peak Signal-to-Noise Ratio (PSNR) and Structural Similarity Index (SSIM).
 
 ## Clear Goal(s)
 - Successfully restore corrupted images by filling missing pixel values using various imputation techniques.
@@ -16,8 +16,7 @@ We will model the data using a combination of statistical imputation methods and
 
 1. **Mean, Median, Mode Imputation**: Use simple statistical methods to fill missing pixels based on neighboring pixel values.
 2. **Singular Value Decomposition (SVD)**: Use SVD to approximate missing pixel values based on the relationships between known pixel values.
-3. **Non-negative Matrix Factorization**: Implement matrix factorization, treating the image as a low-rank matrix. We will train the model to predict the missing pixel values based on the known ones.
-4. **Autoencoders (Deep Learning)**: Train an autoencoder to reconstruct images by learning a compressed representation of the corrupted images and generating missing pixels as output.
+3. **Total variation image in-painting**: Generates an image with the observed entries intact while filling the missing pixel values such that we have minimal total variation. Since the total variation objective is a convex functional, we can use standard interior-point methods from convex programming software to solve the problem. 
 
 The machine learning-based methods will require training on a portion of the dataset to learn patterns and relationships between pixel values.
 
@@ -33,12 +32,12 @@ We will divide the dataset into training and testing sets:
 - **80% for Training**: This will be used to train models like matrix factorization and autoencoders.
 - **20% for Testing**: This will serve as our evaluation set for the imputation methods. The corrupted version of this test set will not have the same corruption pattern as the training data to test generalization.
   
-We will use cross-validation for parameter tuning, particularly for the matrix factorization and autoencoder models, to ensure they generalize well to unseen data.
+We will use cross-validation for parameter tuning, particularly for the matrix factorization (SVD) and total variation image in-painting models, to ensure they generalize well to unseen data.
 
 ## Timeline
 ### Week 1 (10/1 - 10/7)
 - Submit the project proposal.
-- Begin collecting datasets (CIFAR-10, MNIST) and finalize the corruption process.
+- Begin collecting datasets (CIFAR-10) and finalize the corruption process.
 
 ### Week 2 (10/8 - 10/14)
 - Implement the data corruption process and prepare the dataset.
@@ -49,11 +48,10 @@ We will use cross-validation for parameter tuning, particularly for the matrix f
 - Generate preliminary visualizations of corrupted and restored images.
 
 ### Week 4 (10/22 - 10/28)
-- Implement matrix factorization for imputation.
+- Implement total variation in-painting for imputation.
 - Continue refining visualizations and collect initial results.
 
 ### Week 5 (10/29 - 11/4)
-- Implement autoencoder-based imputation.
 - Prepare for the midterm report and presentation.
 
 ### Midterm Report (Due 11/5)
@@ -61,7 +59,7 @@ We will use cross-validation for parameter tuning, particularly for the matrix f
 - Record and upload a 5-minute presentation summarizing the project progress.
 
 ### Week 6-7 (11/6 - 11/18)
-- Further refine matrix factorization and autoencoder models.
+- Further refine total variation in-painting model.
 - Explore additional advanced techniques, if time permits.
 
 ### Week 8-9 (11/19 - 12/2)
