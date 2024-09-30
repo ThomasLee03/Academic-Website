@@ -16,7 +16,7 @@ We will model the data using a combination of statistical imputation methods and
 
 1. **Mean, Median, Mode Imputation**: Use simple statistical methods to fill missing pixels based on neighboring pixel values.
 2. **Singular Value Decomposition (SVD)**: Use SVD to approximate missing pixel values based on the relationships between known pixel values.
-3. **Matrix Factorization**: Implement matrix factorization, treating the image as a low-rank matrix. We will train the model to predict the missing pixel values based on the known ones.
+3. **Non-negative Matrix Factorization**: Implement matrix factorization, treating the image as a low-rank matrix. We will train the model to predict the missing pixel values based on the known ones.
 4. **Autoencoders (Deep Learning)**: Train an autoencoder to reconstruct images by learning a compressed representation of the corrupted images and generating missing pixels as output.
 
 The machine learning-based methods will require training on a portion of the dataset to learn patterns and relationships between pixel values.
