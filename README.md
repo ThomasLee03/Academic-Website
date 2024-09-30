@@ -3,7 +3,7 @@
 ## Description of the Project
 This project focuses on restoring corrupted images represented as matrices with missing pixel values. I will explore various matrix completion techniques such as mean / median / mode imputation, Singular Value Decomposition (SVD), and more advanced methods such as total variation image in-painting. The goal is to fill the missing pixels and evaluate which method yields the best restoration based on both visual quality and quantitative metrics like Peak Signal-to-Noise Ratio (PSNR) and Structural Similarity Index (SSIM).
 
-## Clear Goal(s)
+## Clear Goals
 - Successfully restore corrupted images by filling missing pixel values using various matrix completion techniques.
 - Compare the effectiveness of basic statistical methods (mean, median, mode), matrix factorization, and autoencoders.
 - Measure performance based on visual inspection and quantitative metrics (e.g., PSNR, SSIM).
