@@ -1,4 +1,6 @@
 Project Proposal: Image Restoration using Imputation Techniques
+
+
 Description of the Project
 This project focuses on restoring corrupted images represented as matrices with missing entries. The goal is to explore various imputation methods such as mean, median, mode, and Singular Value Decomposition (SVD) to fill in the missing values, and evaluate which method provides the best visual restoration. The project will involve collecting a dataset of images, corrupting them by removing random pixel values, and then applying different imputation techniques to recover the missing pixels.
 
