@@ -9,7 +9,7 @@ This project focuses on restoring corrupted images represented as matrices with 
 - Measure performance based on visual inspection and quantitative metrics (e.g., PSNR, SSIM).
 
 ## Data Collection
-I will be using the publicly available image dataset CIFAR-10 for image collection. To simulate corrupted images, we will randomly remove pixel values, replacing them with placeholders (e.g., `NaN'). These datasets will serve as our training and testing ground for the various imputation techniques.
+I will be using the publicly available image dataset CIFAR-10 for image collection. To simulate corrupted images, we will randomly remove pixel values, replacing them with placeholders (e.g., `NaN' or (0,0,0)). These datasets will serve as our training and testing ground for the various imputation techniques.
 
 ## How We Plan on Modeling the Data
 We will model the data using a combination of statistical imputation methods and machine learning techniques:
