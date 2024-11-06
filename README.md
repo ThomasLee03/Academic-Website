@@ -56,8 +56,8 @@ The best PSNR value (~7.142 at rank 11) produced a similar reconstruction with f
 
 I observed that the optimal recovery ranks differed between PSNR and SSIM, prompting me to explore how each metric varies with rank. The graphs below illustrate the relationship between rank and these evaluation metrics.
 
-![PSNR vs Rank](imageDisplay/PSNR_vs_Rank.png)
-![SSIM vs Rank](imageDisplay/SSIM_vs_Rank.png)
+![PSNR vs Rank](imageDisplay/PSNR_vs_RankSpiritomb.png)
+![SSIM vs Rank](imageDisplay/SSIM_vs_RankSpiritomb.png)
 
 Interestingly, the relationship between SSIM and PSNR with rank follows a parabolic shape, peaking at different ranks. This suggests that structural similarity (SSIM) and fidelity (PSNR) may prioritize different aspects of the image.
 
@@ -103,9 +103,9 @@ I calculated the SSIM to be ~33.030 and the SSIM value to be 0.932, which is con
 
 What was interesting was that the distribution of the relationship between the metrics (PSNR and SSIM) and rank changed.
 
-![PSNR vs. Rank Image](imageDisplay/PSNR_vs_RankSpiritomb.jpg)
+![PSNR vs. Rank Image](imageDisplay/PSNR_vs_Rank.jpg)
 
-![SSIM vs. Rank Image](imageDisplay/SSIM_vs_RankSpiritomb.jpg)
+![SSIM vs. Rank Image](imageDisplay/SSIM_vs_Rank.jpg)
 
 We see that it doesn't necessarily follow a parabolic curve, but rather a unique distribution. It was particularly interesting that the max for both distributions resulted in a rank of 21 as well. 
 
