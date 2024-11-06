@@ -103,9 +103,9 @@ I calculated the SSIM to be ~33.030 and the SSIM value to be 0.932, which is con
 
 What was interesting was that the distribution of the relationship between the metrics (PSNR and SSIM) and rank changed.
 
-![PSNR vs. Rank Image](imageDisplay/PSNR_vs_Rank.jpg)
+![PSNR vs. Rank Image](imageDisplay/PSNR_vs_RankSpiritomb.jpg)
 
-![SSIM vs. Rank Image](imageDisplay/SSIM_vs_Rank.jpg)
+![SSIM vs. Rank Image](imageDisplay/SSIM_vs_RankSpiritomb.jpg)
 
 We see that it doesn't necessarily follow a parabolic curve, but rather a unique distribution. It was particularly interesting that the max for both distributions resulted in a rank of 21 as well. 
 
