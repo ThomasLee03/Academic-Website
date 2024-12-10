@@ -202,7 +202,27 @@ The differences in the graphs can be attributed to the image content and complex
 
 # Visual Comparison Between All Image Imputation Methods
 
-For 
+For the sake of brevity, this report will present only the generated images for the Turtle image using the following methods: Mean, Median, Mode, PCA (with the best SSIM), Total Variation Inpainting, and PCA with Mean Preprocessing (best SSIM).
+
+**Turtle Mean Imputed Image**
+![Turtle mean](imageDisplay/mean_imputed_noIBFvv.PNG)
+
+**Turtle Median Imputed Image**
+![Turtle median](imageDisplay/median_imputed_PUfsm4H.PNG)
+
+**Turtle Mode Imputed Image**
+![Turtle mode](imageDisplay/turtlemode.PNG)
+
+**Turtle PCA Imputed Image**
+![Turtle PCA Imputed Image](imageDisplay/PCA_SSIM_imputed_JdS1slh.PNG)
+
+**Turtle Total Variation in Painting Imputed Image**
+![Turtle Total Variation in Painting Imputed Image](imageDisplay/TV_inpainting_imputed_C569jH5.PNG)
+
+**Turtle PCA Imputed Image with Mean Preprocessing**
+![Turtle PCA Imputed Image with Mean Preprocessing](imageDisplay/PCA_SSIM_imputed_jyOXMzc.PNG)
+
+Visually, PCA and PCA with Mean Preprocessing outperformed Mean, Median, and Mode imputation. Total Variation Inpainting delivered the best results, with no noticeable visual artifacts.
 
 # Final Conclusions:
 After conducting extensive experiments with various imputation methods, it is clear that Total Variation Inpainting consistently outperformed other techniques across different types of images both visually and by performancce metrics. This method demonstrated superior performance in terms of both PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores, making it the most reliable for restoring corrupted images. While other imputation methods such as PCA, Mean, Median, and Mode preprocessing showed promise in specific cases, Total Variation Inpainting emerged as the most robust approach overall. This suggests that when high-quality image restoration is required, especially in scenarios involving realistic image corruption, Total Variation Inpainting should be the preferred method. Furthermore, the experiments highlight the importance of selecting the appropriate imputation technique based on the image characteristics and the desired level of detail recovery.
