@@ -86,9 +86,11 @@ Before applying PCA-based imputation, it is often useful to apply a basic imputa
 
 Convex optimization is a celebrated field of tractable optimization problems with fast algorithms and strong theoretical foundations. Many problems in statistics, machine learning, signal processing, can be reduced to minimizing a convex function over a convex constraint set, where the resulting optimization problem can then be efficiently solved by interior point methods. Primarily, convex optimization-based approaches are nice because 1) any local optimum is a global optimum and 2) strong duality holds under relatively weak conditions, providing a certificate of optimality for our solution.
 
-Total variation inpainting is one such technique that has seen incredible promise in image and signal reconstruction. The total variation of a matrix X Rm n is given by:
+Total variation inpainting is one such technique that has seen incredible promise in image and signal reconstruction. The total variation of a matrix \( X \in \mathbb{R}^{m \times n} \) is given by:
 
-TV(X)=i=1m-1j=1n-1|| [Xi+1,j -Xi,j , Xi,j+1-Xi,j]||2 . 
+\[
+TV(X) = \sum_{i=1}^{m-1} \sum_{j=1}^{n-1} \left\| \begin{bmatrix} X_{i+1,j} - X_{i,j} \\ X_{i,j+1} - X_{i,j} \end{bmatrix} \right\|_2.
+\] 
 
 Mathematically, the total variation measures the sum of the norms of discretized gradients across the image. Intuitively, the total variation measures smoothness across an image, and we use the idea that corrupted image pixels should roughly follow this smoothness pattern as well. However, one surprising property of the total variation function is that minimization still preserves sharp corners in the image instead of blurring or smoothening them out.
 
