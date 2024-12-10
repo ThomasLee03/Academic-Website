@@ -131,14 +131,22 @@ However, for this specific image (Pikachu), median and mode imputation methods r
 Despite their reasonable PSNR performance, median and mode imputation methods ranked among the lowest when it came to SSIM. This can be attributed to the fact that these methods do not take into account the structural and local patterns in the image, such as edges, textures, and fine details. SSIM measures the structural similarity between images, and since median and mode imputation methods fail to preserve these local features, they result in poor SSIM scores. In contrast, methods like PCA and TV inpainting are able to maintain the image’s structure and texture, leading to better SSIM performance.
 # Further analysis on PCA Imputation with summary statistic preprocessing
 An interesting finding was that PCA produced comparable results with PCA and mean/median/mode initialization. This is likely because PCA is already effective at capturing the underlying structure of the image and can extract the most important features from the data. Since PCA is designed to reduce dimensionality and focus on the key components of the image, the preprocessing steps (mean, median, or mode imputation) don't significantly enhance its performance. While these preprocessing methods provide a basic estimate of the missing data, they don't improve the ability of PCA to identify and refine the core features of the image. Therefore, PCA alone can still achieve strong results, making the additional preprocessing unnecessary for improving performance.
+
 **Pikachu SSIM and PSNR graphs**
+
 ![SSIM and PSNR for pikachu](imageDisplay/PCAconvergencegraphwithpikachu.JPG)
+
 **Cat SSIM and PSNR graphs**
+
 ![PSNR and SSIM for cat](imageDisplay/PCAconvergencewithcatrealimage.JPG)
+
 **Turtle SSIM and PSNR graphs**
+
 ![SSIM and PSNR for turtle](imageDisplay/PCAconvergencewithturtlerealimage.JPG)
+
 **Spiritomb SSIM and PSNR graphs**
 ![SSIM and PSNR for spiritomb](imageDisplay/PCAconvergencewithturtlerealimage.JPG)
+
 When analyzing the peak of the PSNR and SSIM scores, the optimal rank for reconstruction for all of them landed somewhere between 10-20. And almost all, except one of my findings, showed that the rank chosen with the best PSNR and the rank chosen with the best SSIM score were the same rank. This could be because the PSNR and SSIM scores, despite being distinct metrics, are often correlated when it comes to image quality. Both metrics aim to measure how well the reconstructed image matches the original image, albeit from different perspectives (PSNR from a pixel-wise error perspective and SSIM from a structural similarity perspective). Thus, the rank that achieves the best performance in one metric is likely to perform well in the other, leading to similar optimal ranks for both PSNR and SSIM in most cases.
 What I found after conducting multiple experiments on realistic and cartoon images was that there was no exact pattern when it came to the trends of rank with PSNR and SSIM, only that there is a peak and then it decreases. This behavior can be attributed to the nature of low-rank approximations used in PCA. Initially, increasing the rank captures more features of the image, improving the imputation. However, beyond a certain rank, the model begins to capture noise and less relevant features, leading to overfitting. This results in a decline in performance as the rank increases further, which is reflected in both PSNR and SSIM scores.
 The differences in the graphs can be attributed to the image content and complexity. For realistic images, where there are more subtle textures and fine details, higher ranks may be needed to capture the necessary features, while animated images, which are often simpler and more uniform in structure, may not require as high a rank to achieve good results. Additionally, the nature of the image—whether it contains high-frequency details or smooth gradients—affects how the rank influences performance. The choice of rank must balance between capturing enough information to improve quality and avoiding overfitting by capturing irrelevant details.
