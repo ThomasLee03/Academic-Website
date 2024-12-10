@@ -242,3 +242,9 @@ Visually, PCA and PCA with Mean Preprocessing outperformed Mean, Median, and Mod
 
 # Final Conclusions:
 After conducting extensive experiments with various imputation methods, it is clear that Total Variation Inpainting consistently outperformed other techniques across different types of images both visually and by performancce metrics. This method demonstrated superior performance in terms of both PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores, making it the most reliable for restoring corrupted images. While other imputation methods such as PCA, Mean, Median, and Mode preprocessing showed promise in specific cases, Total Variation Inpainting emerged as the most robust approach overall. This suggests that when high-quality image restoration is required, especially in scenarios involving realistic image corruption, Total Variation Inpainting should be the preferred method. Furthermore, the experiments highlight the importance of selecting the appropriate imputation technique based on the image characteristics and the desired level of detail recovery.
+
+## Citations
+
+- [Robust Principal Component Analysis](https://arxiv.org/pdf/0912.3599)
+- [Understanding Image Quality Assessment Metrics: CR, PSNR, and SSIM](https://medium.com/@jradzik4/understanding-image-quality-assessment-metrics-cr-psnr-and-ssim-76ffa82d81ff)
+- [Total variation in-painting](https://www.cvxgrp.org/cvx_short_course/docs/intro/notebooks/tv_inpainting.html)
