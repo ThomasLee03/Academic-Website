@@ -113,11 +113,39 @@ We implemented this method using CVXPY and unfortunately received results far in
 
 The noise component is not sparse: the corruption occurs in approximately 70% of the pixels onscreen, which means that the corruption occupies actually a very dense subset of the matrix entries. Thus, the underlying assumption that the model is low-rank plus sparse is violated. 
 The problem is extremely high-dimensional: CVXPY solves problems using interior-point methods which require the construction of a Hessian matrix. This means that the resulting solution process is not only slow, but incredibly memory-hungry. We also implemented custom first-order and proximal algorithms for solving this problem using singular-value thresholding, but the results were equally poor in terms of reconstruction quality. 
-# Imputation Methods Performance Analysis
+# Imputation Methods Performance Analysis: PSNR and SSIM Evaluation
 
-## Visual Comparisons
+## Comparing Mean, Median, and Mode (base models)
 
+For realistic images, we noticed that for mean and median imputation they produced visually similar immages:
 
+**Turtle Mean Imputed Image**
+![Turtle mean](imageDisplay/mean_imputed_noIBFvv.PNG)
+
+**Turtle Median Imputed Image**
+![Turtle median](imageDisplay/median_imputed_PUfsm4H.PNG)
+
+This just tells us that for a specific column, the mean and median pixel value must be very close. This was further confirmed via the PSNR and SSIM scores (see below in the graphs). However, the mode displays these visual artifacts of "streaks". 
+
+**Turtle Mode Imputed Image**
+![Turtle mode](imageDisplay/turtlemode.PNG)
+
+The poorer visual quality of the mode-imputed image is reflected in the lower SSIM scores. This outcome makes sense for realistic images, which typically have smooth gradients between pixels due to shading. In such cases, averaging (mean) or selecting the middle value (median) works best. On the other hand, mode imputation—filling in corrupted pixels with the most frequently occurring value—fails to capture these subtle gradients.
+
+For some animated images, however, we noticed mean did relitively worse than median and mode 
+
+**Pikachu Mean Imputed Image**
+![Pikachu mean](imageDisplay/mean_imputed_rF9v3jH.PNG)
+
+**Pikachu Median Imputed Image**
+![Pikachu median](imageDisplay/imputed_UJOYYZZ.PNG)
+
+**Pikachu Mode Imputed Image**
+![Pikachu mode](imageDisplay/imputed_7PnRC2V.PNG)
+
+In this case, the streak artifacts are more prominent with mean imputation. Median and mode imputation produce cleaner results, which is also confirmed by the PSNR and SSIM scores (see graphs below). This difference is due to the nature of animated images, which often feature sharp contrasts between colors (e.g., Pikachu's yellow body against a white background) and a simpler color palette. Mean imputation tends to blur these contrasting colors, resulting in poor visual quality. In such cases, median or mode imputation preserves the sharp boundaries better than mean.
+
+## Comparison with Base Models and PCA
 
 **Turtle SSIM and Semi-log PSNR values**
 ![semi-log PSNR for Turtle](imageDisplay/turtlesemi-logpsnr.JPG)
@@ -132,11 +160,25 @@ In contrast, we would expect PCA, TV inpainting, and PCA with summary statistic 
 **Pikachu SSIM and Semi-log PSNR values**
 ![semi-log PSNR for Pikachu](imageDisplay/pikachusemi-logpsnr.JPG)
 ![SSIM for Pikachu](imageDisplay/pikachussim.JPG)
-However, for this specific image (Pikachu), median and mode imputation methods ranked as the third and second-best performing in terms of PSNR, respectively. This is somewhat unexpected given the usual lower performance of these methods. The large homogeneous areas in the image (e.g., Pikachu’s yellow body) make median and mode imputation more effective, as these methods can replace missing pixels with values that closely match the surrounding region. This reduces the overall pixel-wise error, which is why they perform relatively well in PSNR evaluation.
+However, for this specific image (Pikachu), median and mode imputation methods ranked as the third and second-best performing in terms of PSNR, respectively. This is somewhat unexpected given the usual lower performance of these methods. The large homogeneous areas in the image (e.g., Pikachu’s yellow body) make median and mode imputation more effective (as explained above), as these methods can replace missing pixels with values that closely match the surrounding region. This reduces the overall pixel-wise error, which is why they perform relatively well in PSNR evaluation.
 Despite their reasonable PSNR performance, median and mode imputation methods ranked among the lowest when it came to SSIM. This can be attributed to the fact that these methods do not take into account the structural and local patterns in the image, such as edges, textures, and fine details. SSIM measures the structural similarity between images, and since median and mode imputation methods fail to preserve these local features, they result in poor SSIM scores. In contrast, methods like PCA and TV inpainting are able to maintain the image’s structure and texture, leading to better SSIM performance.
 
-# Further analysis on PCA Imputation with summary statistic preprocessing
-An interesting finding was that PCA produced comparable results with PCA and mean/median/mode initialization. This is likely because PCA is already effective at capturing the underlying structure of the image and can extract the most important features from the data. Since PCA is designed to reduce dimensionality and focus on the key components of the image, the preprocessing steps (mean, median, or mode imputation) don't significantly enhance its performance. While these preprocessing methods provide a basic estimate of the missing data, they don't improve the ability of PCA to identify and refine the core features of the image. Therefore, PCA alone can still achieve strong results, making the additional preprocessing unnecessary for improving performance.
+## Further analysis on PCA Imputation with summary statistic preprocessing
+An interesting finding was that PCA produced comparable results with PCA and mean/median/mode initialization. This can be further confirmed via visual comparisons. 
+
+**Turtle PCA Imputed Image**
+![Turtle PCA Imputed Image](imageDisplay/PCA_SSIM_imputed_JdS1slh.PNG)
+
+**Turtle PCA Imputed Image with Mean Preprocessing**
+![Turtle PCA Imputed Image with Mean Preprocessing](imageDisplay/PCA_SSIM_imputed_jyOXMzc.PNG)
+
+**Turtle PCA Imputed Image with Mean Preprocessing**
+![Turtle PCA Imputed Image with Median Preprocessing](imageDisplay/PCA_SSIM_imputed_WfKrRxg.PNG)
+
+**Turtle PCA Imputed Image with Mode Preprocessing**
+![Turtle PCA Imputed Image with Mode Preprocessing](imageDisplay/PCA_SSIM_imputed_YTQ1aO9.PNG)
+
+This is likely because PCA is already effective at capturing the underlying structure of the image and can extract the most important features from the data. Since PCA is designed to reduce dimensionality and focus on the key components of the image, the preprocessing steps (mean, median, or mode imputation) don't significantly enhance its performance. While these preprocessing methods provide a basic estimate of the missing data, they don't improve the ability of PCA to identify and refine the core features of the image. Therefore, PCA alone can still achieve strong results, making the additional preprocessing unnecessary for improving performance.
 
 **Pikachu SSIM and PSNR graphs**
 
@@ -157,5 +199,10 @@ An interesting finding was that PCA produced comparable results with PCA and mea
 When analyzing the peak of the PSNR and SSIM scores, the optimal rank for reconstruction for all of them was when we took the 20 first components. This could be because the PSNR and SSIM scores, despite being distinct metrics, are often correlated when it comes to image quality. Both metrics aim to measure how well the reconstructed image matches the original image, albeit from different perspectives (PSNR from a pixel-wise error perspective and SSIM from a structural similarity perspective). Thus, the rank that achieves the best performance in one metric is likely to perform well in the other, leading to similar optimal ranks for both PSNR and SSIM in most cases.
 What I found after conducting multiple experiments on realistic and cartoon images was that there was no exact pattern when it came to the trends of rank with PSNR and SSIM, only that there is a peak and then it decreases. This behavior can be attributed to the nature of low-rank approximations used in PCA. Initially, increasing the rank captures more features of the image, improving the imputation. However, beyond a certain rank, the model begins to capture noise and less relevant features, leading to overfitting. This results in a decline in performance as the rank increases further, which is reflected in both PSNR and SSIM scores.
 The differences in the graphs can be attributed to the image content and complexity. For realistic images, where there are more subtle textures and fine details, higher ranks may be needed to capture the necessary features, while animated images, which are often simpler and more uniform in structure, may not require as high a rank to achieve good results. Additionally, the nature of the image—whether it contains high-frequency details or smooth gradients—affects how the rank influences performance. The choice of rank must balance between capturing enough information to improve quality and avoiding overfitting by capturing irrelevant details.
+
+# Visual Comparison Between All Image Imputation Methods
+
+For 
+
 # Final Conclusions:
-After conducting extensive experiments with various imputation methods, it is clear that Total Variation Inpainting consistently outperformed other techniques across different types of images. This method demonstrated superior performance in terms of both PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores, making it the most reliable for restoring corrupted images. While other imputation methods such as PCA, Mean, Median, and Mode preprocessing showed promise in specific cases, Total Variation Inpainting emerged as the most robust approach overall. This suggests that when high-quality image restoration is required, especially in scenarios involving realistic image corruption, Total Variation Inpainting should be the preferred method. Furthermore, the experiments highlight the importance of selecting the appropriate imputation technique based on the image characteristics and the desired level of detail recovery.
+After conducting extensive experiments with various imputation methods, it is clear that Total Variation Inpainting consistently outperformed other techniques across different types of images both visually and by performancce metrics. This method demonstrated superior performance in terms of both PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores, making it the most reliable for restoring corrupted images. While other imputation methods such as PCA, Mean, Median, and Mode preprocessing showed promise in specific cases, Total Variation Inpainting emerged as the most robust approach overall. This suggests that when high-quality image restoration is required, especially in scenarios involving realistic image corruption, Total Variation Inpainting should be the preferred method. Furthermore, the experiments highlight the importance of selecting the appropriate imputation technique based on the image characteristics and the desired level of detail recovery.
