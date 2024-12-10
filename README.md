@@ -214,6 +214,9 @@ The differences in the graphs can be attributed to the image content and complex
 
 For the sake of brevity, this report will present only the generated images for the Turtle image using the following methods: Mean, Median, Mode, PCA (with the best SSIM), Total Variation Inpainting, and PCA with Mean Preprocessing (best SSIM).
 
+**Turtle Original Image**
+![Turtle original](images/turtle.JPG)
+
 **Turtle Mean Imputed Image**
 
 ![Turtle mean](imageDisplay/mean_imputed_noIBFvv.png)
