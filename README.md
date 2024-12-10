@@ -115,6 +115,10 @@ The noise component is not sparse: the corruption occurs in approximately 70% of
 The problem is extremely high-dimensional: CVXPY solves problems using interior-point methods which require the construction of a Hessian matrix. This means that the resulting solution process is not only slow, but incredibly memory-hungry. We also implemented custom first-order and proximal algorithms for solving this problem using singular-value thresholding, but the results were equally poor in terms of reconstruction quality. 
 # Imputation Methods Performance Analysis
 
+## Visual Comparisons
+
+
+
 **Turtle SSIM and Semi-log PSNR values**
 ![semi-log PSNR for Turtle](imageDisplay/turtlesemi-logpsnr.JPG)
 ![SSIM for Turtle](imageDisplay/turtlessim.JPG)
