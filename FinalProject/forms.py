@@ -1,5 +1,5 @@
 from django import forms
-from .models import Image, Paper, ImageGenerated, Mask, CorruptedImage
+from .models import Image, ImageGenerated, Mask, CorruptedImage
 
 class UploadImageForm(forms.ModelForm):
     class Meta:
@@ -9,14 +9,6 @@ class UploadImageForm(forms.ModelForm):
             'image_file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
-class CreatePaperForm(forms.ModelForm):
-    class Meta:
-        model = Paper
-        fields = ['title', 'content']
-        widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
-        }
 
 class ImputationMethodForm(forms.Form):
     corrupted_image_id = forms.IntegerField(widget=forms.HiddenInput)

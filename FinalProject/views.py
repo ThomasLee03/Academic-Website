@@ -1,12 +1,3 @@
-# file: views.py
-# author: Thomas Lee (tlee03@bu.edu), 11/22/2024
-# This file contains the views for handling image processing tasks in the research project.
-# It includes various imputation methods such as SVD-based, PCA-based, and total variation inpainting,
-# and provides functionality for working with images, masks, corrupted images, and papers. 
-# Views for uploading, selecting, and comparing imputed images, as well as displaying the results, 
-# are also included. The views are connected to the models and handle the logic for processing 
-# and visualizing imputed images.
-
 from statistics import mode
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -21,17 +12,11 @@ from .models import (
     ImageGenerated,
     Mask,
     CorruptedImage,
-    Paper,
-    PaperWithResearcher,
-    PaperImage,
-    PaperWithGeneratedImage,
-    ImageWithGenerated,
-    PaperWithCorruptedImage,
-    PaperWithMask
+    ImageWithGenerated
 )
 from itertools import groupby
-from .forms import UploadImageForm, CreatePaperForm, ImputationMethodForm, ImputeImageForm, UploadImageForm
-from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, ListView, FormView
+from .forms import UploadImageForm, ImputationMethodForm, ImputeImageForm, UploadImageForm
+from django.views.generic import CreateView, DetailView, DeleteView, ListView, FormView
 from django.urls import reverse_lazy
 from io import BytesIO
 from django.core.files.base import ContentFile
@@ -1242,7 +1227,7 @@ class DashboardView(LoginRequiredMixin, ListView):
     # Filters papers by the researcher associated with the logged-in user.
     def get_queryset(self):
         researcher = self.request.user.researcher_profile  # Get the researcher profile for the logged-in user.
-        return Paper.objects.filter(paperwithresearcher__researcher=researcher)  # Return papers linked to the researcher.
+        return Image.objects.filter(researcher=researcher)  # Return papers linked to the researcher.
     # Adds additional context data, such as images, generated images, corrupted images, and masks for the researcher.
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # Get the base context data.
