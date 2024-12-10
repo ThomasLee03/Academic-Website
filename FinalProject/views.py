@@ -379,7 +379,20 @@ def preprocess_with_imputation(M, mask, impute_strategy='mean'):
 
     return np.clip(M, 0, 255).astype(np.uint8)
 
+def login_view(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            messages.success(request, "You have successfully logged in.")
+            return redirect('dashboard')  # Redirect to your dashboard or desired page
+        else:
+            messages.error(request, "Invalid credentials. Please try again.")
+    else:
+        form = AuthenticationForm()
 
+    return render(request, 'FinalProject/login.html', {'form': form})
 
 
 class ImputeImageView(LoginRequiredMixin, FormView):
@@ -425,7 +438,6 @@ class ImputeImageView(LoginRequiredMixin, FormView):
         # Perform PCA-based imputation if the user selects PCA
         if imputation_method == "pca":
             corrupted_image_mat = np.array(corrupted_image_array)
-            original_image_array = np.array(PILImage.open(original_image.image_file))
 
             # Call PCA-based imputation method and track PSNR and SSIM over PCA ranks
             MPSNRbest, MSSIMbest, rankL, PSNRL, SSIML = PCAbestSSIMPSNR(corrupted_image_array, original_image_array, corrupted_image_mat, mask_array)
@@ -734,10 +746,11 @@ def apply_imputation(request):
             mask_array = np.array(PILImage.open(mask.mask_file)) // 255  # Convert mask to binary (0, 1)
 
             corrupted_image_mat = np.array(corrupted_image_array)
+            
+            original_image_array = np.array(PILImage.open(original_image.image_file))
 
             if imputation_method == "pca":
                 # Apply PCA-based imputation and get best images for PSNR and SSIM
-                original_image_array = np.array(PILImage.open(original_image.image_file))
 
                 MPSNRbest, MSSIMbest, rankL, PSNRL, SSIML = PCAbestSSIMPSNR(corrupted_image_array, original_image_array, corrupted_image_mat, mask_array)
 
@@ -886,7 +899,7 @@ def apply_imputation(request):
 
                 # Render the results page with the plots and images
                 return render(
-                    self.request,
+                    request,
                     "FinalProject/imputed_image.html",
                     {
                         "original_image": original_image,
@@ -949,6 +962,7 @@ def apply_imputation(request):
 
                 # Render the results page
                 return render(
+                    request,
                     "FinalProject/imputed_image.html",
                     {
                         "original_image": original_image,
@@ -1069,35 +1083,6 @@ class ImputationCreateView(LoginRequiredMixin, CreateView):
             )
         )
     
-# Displays the paper
-class PaperDetailView(LoginRequiredMixin, DetailView):
-    def get_login_url(self) -> str:
-        '''return the url of the login page'''
-        return reverse('login2')
-    model = Paper
-    template_name = 'FinalProject/view_paper.html'
-    context_object_name = 'paper'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['processed_content'] = self.object.render_content()
-        return context
-    
-def login_view(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            messages.success(request, "You have successfully logged in.")
-            return redirect('dashboard')  # Redirect to your dashboard or desired page
-        else:
-            messages.error(request, "Invalid credentials. Please try again.")
-    else:
-        form = AuthenticationForm()
-
-    return render(request, 'FinalProject/login.html', {'form': form})
-
 def logout_view(request):
     logout(request)
     return redirect('login2')
@@ -1153,46 +1138,6 @@ class ImageImportCreateView(LoginRequiredMixin, CreateView):
         self.success_url = reverse_lazy("view_generated_image", kwargs={"pk": original_image.pk})
         return super().form_valid(form)
 
-# view to handle filtering the papers created by all researchers
-class PaperSearchView(LoginRequiredMixin, ListView):
-    def get_login_url(self) -> str:
-        '''return the url of the login page'''
-        return reverse('login2')
-    model = Paper
-    template_name = 'FinalProject/paper_search.html'
-    context_object_name = 'papers'
-    paginate_by = 10
-
-    def get_queryset(self):
-        queryset = Paper.objects.all()
-
-        # Filter by title and researcher
-        title_query = self.request.GET.get('title', '')
-        researcher_query = self.request.GET.get('researcher', '')
-
-        if title_query:
-            queryset = queryset.filter(title__icontains=title_query)
-        if researcher_query:
-            queryset = queryset.filter(
-                paperwithresearcher__researcher__first_name__icontains=researcher_query
-            ) | queryset.filter(
-                paperwithresearcher__researcher__last_name__icontains=researcher_query
-            )
-
-        # Order by creation date (if specified)
-        order_by = self.request.GET.get('order_by', 'time_created')  # Default to 'created_at'
-        if order_by == 'date':
-            queryset = queryset.order_by('time_created')  # Order by creation date
-        else:
-            queryset = queryset.order_by('-time_created')  # Default descending order by creation date
-
-        return queryset.distinct()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['request'] = self.request  # Explicitly pass request
-        return context
-
 # DetailView for displaying images
 class ImageGeneratedDetailView(LoginRequiredMixin, DetailView):
     def get_login_url(self) -> str:
@@ -1211,172 +1156,6 @@ class ImageGeneratedDetailView(LoginRequiredMixin, DetailView):
             "mask": original_image.mask,
         })
         return context
-
-# Class to handle creating a Paper object.
-# The view allows the logged-in user to create the details of a paper, including
-# adding or removing associated images, generated images, corrupted images, and masks.
-# It ensures that the paper being updated is linked to the current user through their researcher profile.
-class PaperCreateView(LoginRequiredMixin, CreateView):
-    def get_login_url(self) -> str:
-        '''return the url of the login page'''
-        return reverse('login2')
-    model = Paper
-    form_class = CreatePaperForm
-    template_name = "FinalProject/create_paper.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        researcher = self.request.user.researcher_profile
-        context["images"] = Image.objects.filter(researcher=researcher)
-        context["generated_images"] = ImageGenerated.objects.filter(researcher=researcher)
-        context["corrupted_images"] = CorruptedImage.objects.filter(researcher=researcher)
-        context["masks"] = Mask.objects.filter(researcher=researcher)
-        return context
-
-    def form_valid(self, form):
-        # Save the paper instance
-        paper = form.save()
-
-        # Get the current researcher
-        researcher = self.request.user.researcher_profile
-
-        # Create a PaperWithResearcher instance to link the paper with the researcher
-        PaperWithResearcher.objects.create(researcher=researcher, paper=paper)
-
-        # Clear existing relationships to avoid duplicates
-        PaperImage.objects.filter(paper=paper).delete()
-        PaperWithGeneratedImage.objects.filter(paper=paper).delete()
-        PaperWithCorruptedImage.objects.filter(paper=paper).delete()
-        PaperWithMask.objects.filter(paper=paper).delete()
-
-        # Handle regular images
-        order_counter = 1
-        images = self.request.POST.getlist('images')
-        for image_id in images:
-            PaperImage.objects.create(paper=paper, image_id=image_id, order=order_counter)
-            order_counter += 1
-
-        # Handle generated images
-        order_counter = 1
-        generated_images = self.request.POST.getlist('generated_images')
-        for gen_image_id in generated_images:
-            PaperWithGeneratedImage.objects.create(paper=paper, generated_image_id=gen_image_id, order=order_counter)
-            order_counter += 1
-
-        # Handle corrupted images
-        order_counter = 1
-        corrupted_images = self.request.POST.getlist('corrupted_images')
-        for corr_image_id in corrupted_images:
-            PaperWithCorruptedImage.objects.create(paper=paper, corrupted_image_id=corr_image_id, order=order_counter)
-            order_counter += 1
-
-        # Handle masks
-        order_counter = 1
-        masks = self.request.POST.getlist('masks')
-        for mask_id in masks:
-            PaperWithMask.objects.create(paper=paper, mask_id=mask_id, order=order_counter)
-            order_counter += 1
-
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("dashboard")
-
-
-# Class to handle updating an existing Paper object.
-# The view allows the logged-in user to update the details of a paper, including
-# adding or removing associated images, generated images, corrupted images, and masks.
-# It ensures that the paper being updated is linked to the current user through their researcher profile.
-class PaperUpdateView(LoginRequiredMixin, UpdateView):
-    def get_login_url(self) -> str:
-        '''return the url of the login page'''
-        return reverse('login2')
-    model = Paper
-    form_class = CreatePaperForm
-    template_name = "FinalProject/edit_paper.html"
-
-    def get_success_url(self):
-        # Return the URL to the paper detail view after successful update
-        return reverse('paper_detail', kwargs={'pk': self.object.pk})
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        researcher = self.request.user.researcher_profile
-
-        # Ensure the paper belongs to the current researcher
-        if not PaperWithResearcher.objects.filter(researcher=researcher, paper=self.object).exists():
-            return redirect("dashboard")
-
-        context["images"] = Image.objects.filter(researcher=researcher)
-        context["generated_images"] = ImageGenerated.objects.filter(researcher=researcher)
-
-        # Filter corrupted images and masks to show only those related to the logged-in researcher
-        context["corrupted_images"] = CorruptedImage.objects.filter(researcher=researcher)
-        context["masks"] = Mask.objects.filter(researcher=researcher)
-        
-        # Linked images, generated images, corrupted images, and masks to be checked in the form
-        context["linked_images"] = {img.image.id: True for img in self.object.paperimage_set.all()}
-        context["linked_generated_images"] = {gen_img.generated_image.id: True for gen_img in self.object.paperwithgeneratedimage_set.all()}
-        context["linked_corrupted_images"] = {corr_img.corrupted_image.id: True for corr_img in self.object.paperwithcorruptedimage_set.all()}
-        context["linked_masks"] = {mask.mask.id: True for mask in self.object.paperwithmask_set.all()}
-
-        return context
-    def form_valid(self, form):
-        paper = form.save()
-
-        # Clear existing relationships to avoid duplicates
-        PaperImage.objects.filter(paper=paper).delete()
-        PaperWithGeneratedImage.objects.filter(paper=paper).delete()
-        PaperWithCorruptedImage.objects.filter(paper=paper).delete()
-        PaperWithMask.objects.filter(paper=paper).delete()
-
-        # Handle regular images
-        order_counter = 1
-        images = self.request.POST.getlist('images')
-        for image_id in images:
-            PaperImage.objects.create(paper=paper, image_id=image_id, order=order_counter)
-            order_counter += 1
-
-        # Handle generated images
-        order_counter = 1
-        generated_images = self.request.POST.getlist('generated_images')
-        for gen_image_id in generated_images:
-            PaperWithGeneratedImage.objects.create(paper=paper, generated_image_id=gen_image_id, order=order_counter)
-            order_counter += 1
-
-        # Handle corrupted images
-        order_counter = 1
-        corrupted_images = self.request.POST.getlist('corrupted_images')
-        for corr_image_id in corrupted_images:
-            PaperWithCorruptedImage.objects.create(paper=paper, corrupted_image_id=corr_image_id, order=order_counter)
-            order_counter += 1
-
-        # Handle masks
-        order_counter = 1
-        masks = self.request.POST.getlist('masks')
-        for mask_id in masks:
-            PaperWithMask.objects.create(paper=paper, mask_id=mask_id, order=order_counter)
-            order_counter += 1
-
-        return super().form_valid(form)
-
-
-# Class to handle the deletion of a Paper object.
-class PaperDeleteView(LoginRequiredMixin, DeleteView):
-    # Returns the URL of the login page if the user is not authenticated.
-    def get_login_url(self) -> str:
-        '''return the url of the login page'''
-        return reverse('login2')
-
-    model = Paper  # The model associated with this view (Paper).
-    template_name = "FinalProject/delete_paper.html"  # Template to render for deleting a paper.
-    success_url = reverse_lazy("dashboard")  # URL to redirect after the paper is deleted.
-
-    # Filters the papers by the researcher associated with the logged-in user.
-    def get_queryset(self):
-        researcher = self.request.user.researcher_profile  # Get the researcher profile for the logged-in user.
-        return Paper.objects.filter(paperwithresearcher__researcher=researcher).distinct()  # Return papers linked to the researcher.
-
 
 # Class to display a list of CorruptedImage objects.
 class CorruptedImageListView(LoginRequiredMixin, ListView):
@@ -1440,7 +1219,6 @@ class DashboardView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         researcher = self.request.user.researcher_profile  # Get the researcher profile for the logged-in user.
         return Paper.objects.filter(paperwithresearcher__researcher=researcher)  # Return papers linked to the researcher.
-
     # Adds additional context data, such as images, generated images, corrupted images, and masks for the researcher.
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # Get the base context data.

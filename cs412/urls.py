@@ -21,15 +21,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hw/', include('hw.urls')), ##we create the URL hw/, and associate it with URLs in another file
-    path('quotes/', include('quotes.urls')),
-    path('restaurant/', include('restaurant.urls')),
-    #path('', hw.urls), this will make the application on the main webpage 
-    path("blog/", include("blog.urls")),
-    path('mini_fb/', include('mini_fb.urls')),
-    path('marathon_analytics/', include('marathon_analytics.urls')),
-    path('voter_analytics/', include('voter_analytics.urls')),
-    path('FinalProject/', include('FinalProject.urls'))
+    path('', include('FinalProject.urls'))
 ] 
 
 urlpatterns +=  static(settings.STATIC_URL,

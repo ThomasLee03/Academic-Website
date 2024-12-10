@@ -14,22 +14,6 @@
 <div class="container">
     <h1 class="mt-4">Welcome, {{ request.user }}</h1>
 
-    <!-- Papers Section -->
-    <div class="papers-section">
-        <h2>Your Papers</h2>
-        <ul class="list-group">
-            {% for paper in papers %}
-                <li class="list-group-item">
-                    <a href="{% url 'paper_detail' paper.pk %}" class="text-decoration-none">
-                        {{ paper.title }}
-                    </a>
-                </li>
-            {% empty %}
-                <p>No papers found.</p>
-            {% endfor %}
-        </ul>
-    </div>
-
     <!-- Images Section -->
     <div class="images-section mt-4">
         <h2>Images</h2>
