@@ -145,6 +145,7 @@ An interesting finding was that PCA produced comparable results with PCA and mea
 ![SSIM and PSNR for turtle](imageDisplay/PCAconvergencewithturtlerealimage.JPG)
 
 **Spiritomb SSIM and PSNR graphs**
+
 ![SSIM and PSNR for spiritomb](imageDisplay/PCAconvergencegraphwithspiritombmean+pcaimputation.JPG)
 
 When analyzing the peak of the PSNR and SSIM scores, the optimal rank for reconstruction for all of them landed somewhere between 10-20. And almost all, except one of my findings, showed that the rank chosen with the best PSNR and the rank chosen with the best SSIM score were the same rank. This could be because the PSNR and SSIM scores, despite being distinct metrics, are often correlated when it comes to image quality. Both metrics aim to measure how well the reconstructed image matches the original image, albeit from different perspectives (PSNR from a pixel-wise error perspective and SSIM from a structural similarity perspective). Thus, the rank that achieves the best performance in one metric is likely to perform well in the other, leading to similar optimal ranks for both PSNR and SSIM in most cases.
