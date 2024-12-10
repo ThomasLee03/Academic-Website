@@ -201,12 +201,12 @@ def save_image_from_buffer(image, filename):
     else:
         raise TypeError("The 'image' argument must be a PIL.Image instance.")
 
-def generate_corruption(original_image):
+def generate_corruption(original_image, corruption_level = 30):
     pil_image = PILImage.open(original_image.image_file)
     image_matrix = np.array(pil_image)
 
     # Generate a 2D mask for corruption
-    mask = np.random.choice([0, 1], size=image_matrix.shape[:2], p=[0.3, 0.7])  # 30% corrupted
+    mask = np.random.choice([0, 1], size=image_matrix.shape[:2], p=[(100 - corruption_level) / 100, corruption_level / 100])  # 30% corrupted
     mask_expanded = np.repeat(mask[:, :, np.newaxis], 3, axis=2)
 
     # Corrupt the image
@@ -1105,6 +1105,8 @@ class ImageImportCreateView(LoginRequiredMixin, CreateView):
         # Check if the image file is actually uploaded
         if not form.cleaned_data['image_file']:
             raise ValueError("No image file uploaded.")
+        
+        corruption_level = self.request.POST.get('corruption_level', 30)  # Default to 30 if not provided
 
         # Set the researcher field on the form instance
         form.instance.researcher = researcher
@@ -1113,7 +1115,7 @@ class ImageImportCreateView(LoginRequiredMixin, CreateView):
         original_image = form.save()
 
         # Generate corrupted image and mask
-        corrupted_image, mask_image = generate_corruption(original_image)
+        corrupted_image, mask_image = generate_corruption(original_image, int(corruption_level))
 
         # Save the corrupted image
         corrupted_content = save_image_from_buffer(corrupted_image, "corrupted_image.png")

@@ -18,10 +18,16 @@
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}  <!-- CSRF token to prevent cross-site request forgery -->
     
-    <!-- Section for uploading the original image -->
     <div class="form-group">
       <label for="id_image_file" class="h5">Original Image</label>
       {{ form.image_file }}  <!-- Render the file input field for the image -->
+    </div>
+
+    <!-- Add a slider for controlling the corruption level -->
+    <div class="form-group">
+      <label for="corruption_level" class="h5">Corruption Level (0 to 100)</label>
+      <input type="range" id="corruption_level" name="corruption_level" min="0" max="100" value="30" class="form-control-range">
+      <small class="form-text text-muted">Adjust the slider to set the corruption level.</small>
     </div>
 
     <!-- Submit button to upload the image -->
