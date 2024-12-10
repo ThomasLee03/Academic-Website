@@ -38,28 +38,28 @@ To reproduce the results of the imputation experiments, follow these steps:
   - When selecting the Imputation Method with PCA Preprocessing, only choose Mean, Median, or Mode.
   - The PCA preprocessing is designed specifically for these methods and will cause an error if applied with other imputation methods.
   4. Generate the Imputation:
-Click on Generate to apply the imputation method.
-Note that PCA, Total Variation in Painting, and PCA Preprocessing methods may take a bit of time to complete (up to 5 minutes). During this time, the server will appear to be loading.
-You can monitor the progress of the imputation method in the terminal where basic output logs are provided, showing the progression of the process.
-Re-apply Imputation to Another Image:
-After generating an imputation, you can apply a different imputation method to the same or a new image by:
-Clicking on Impute Another Image.
-Select an already inputted image, which is tied to the mask and corrupted image.
-Choose a new imputation method from the available options.
-View Trends and Visualizations:
-For PCA imputation or mean/median/mode preprocessing with PCA imputation, you will be able to see visualizations of the trends for PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores with rank.
-These visualizations help assess the performance of different ranks in the PCA-based imputation process.
-Visualizing the Results
-To compare the imputation results visually, follow these steps:
-Generated Images:
-Go to the Home Page (top left) and scroll down to Generated Images.
-Here, you will see the images generated after applying the imputation technique, along with their corresponding PSNR and SSIM scores.
-Compare Imputation Methods:
-You can also visualize PSNR, SSIM, and semi-log PSNR graphs by clicking on "Compare Imputation Methods" (top right).
-This will display a comparison of the different imputation methods and their corresponding metrics.
+    - Click on Generate to apply the imputation method.
+    - Note that PCA, Total Variation in Painting, and PCA Preprocessing methods may take a bit of time to complete (up to 5 minutes). During this time, the server will appear to be loading.
+    - You can monitor the progress of the imputation method in the terminal where basic output logs are provided, showing the progression of the process.
+  5. Re-apply Imputation to Another Image:
+    - After generating an imputation, you can apply a different imputation method to the same or a new image by:
+      - Clicking on Impute Another Image.
+      - Select an already inputted image, which is tied to the mask and corrupted image.
+      - Choose a new imputation method from the available options.
+    - View Trends and Visualizations:
+      - For PCA imputation or mean/median/mode preprocessing with PCA imputation, you will be able to see visualizations of the trends for PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores with rank.
+      - These visualizations help assess the performance of different ranks in the PCA-based imputation process.
+  6. Visualizing the Results
+    - To compare the imputation results visually, follow these steps:
+    - Generated Images:
+      - Go to the Home Page (top left) and scroll down to Generated Images.
+      - Here, you will see the images generated after applying the imputation technique, along with their corresponding PSNR and SSIM scores.
+    - Compare Imputation Methods:
+      - You can also visualize PSNR, SSIM, and semi-log PSNR graphs by clicking on "Compare Imputation Methods" (top right).
+      - This will display a comparison of the different imputation methods and their corresponding metrics.
 **Note that the images used can be found in the /images directory.**
 
-Model Evaluation
+# Model Evaluation
 We use two metrics primarily to evaluate the quality of the reconstructed image. Visually, we can make qualitative judgments by seeing if there are any obvious visual artifacts in the resulting reconstruction, i.e. are there still any obvious areas of image corruption after the reconstruction process. 
 
 A more quantitative approach involves using the peak-signal-to-noise ratio (PSNR) as well as the structural similarity index measure (SSIM). PSNR measures the fidelity of the restored image, with higher values indicating closer resemblance to the original. SSIM evaluates structural similarity, with values close to 1 indicating high similarity.
