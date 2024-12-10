@@ -137,7 +137,7 @@ This just tells us that for a specific column, the mean and median pixel value m
 
 ![Turtle mode](imageDisplay/imputed_HLKNKFZ.png)
 
-The poorer visual quality of the mode-imputed image is reflected in the lower SSIM scores. This outcome makes sense for realistic images, which typically have smooth gradients between pixels due to shading. In such cases, averaging (mean) or selecting the middle value (median) works best. On the other hand, mode imputation—filling in corrupted pixels with the most frequently occurring value—fails to capture these subtle gradients.
+The poorer visual quality of the mode-imputed image is reflected in the lower SSIM scores (see below in the graphs for the Turtle Image). This outcome makes sense for realistic images, which typically have smooth gradients between pixels due to shading. In such cases, averaging (mean) or selecting the middle value (median) works best. On the other hand, mode imputation—filling in corrupted pixels with the most frequently occurring value—fails to capture these subtle gradients.
 
 For some animated images, however, we noticed mean did relitively worse than median and mode 
 
