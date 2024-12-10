@@ -117,7 +117,7 @@ The problem is extremely high-dimensional: CVXPY solves problems using interior-
 
 ## Comparing Mean, Median, and Mode (base models)
 
-For realistic images, we noticed that for mean and median imputation they produced visually similar immages:
+For realistic images, we noticed that for mean and median imputation they produced visually similar images:
 
 **Turtle Mean Imputed Image**
 
@@ -245,7 +245,7 @@ For the sake of brevity, this report will present only the generated images for 
 Visually, PCA and PCA with Mean Preprocessing outperformed Mean, Median, and Mode imputation. Total Variation Inpainting delivered the best results, with no noticeable visual artifacts.
 
 # Final Conclusions:
-After conducting extensive experiments with various imputation methods, it is clear that Total Variation Inpainting consistently outperformed other techniques across different types of images both visually and by performancce metrics. This method demonstrated superior performance in terms of both PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores, making it the most reliable for restoring corrupted images. While other imputation methods such as PCA, Mean, Median, and Mode preprocessing showed promise in specific cases, Total Variation Inpainting emerged as the most robust approach overall. This suggests that when high-quality image restoration is required, especially in scenarios involving realistic image corruption, Total Variation Inpainting should be the preferred method. Furthermore, the experiments highlight the importance of selecting the appropriate imputation technique based on the image characteristics and the desired level of detail recovery.
+After conducting extensive experiments with various imputation methods, it is clear that Total Variation Inpainting consistently outperformed other techniques across different types of images both visually and by performance metrics. This method demonstrated superior performance in terms of both PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores, making it the most reliable for restoring corrupted images. While other imputation methods such as PCA, Mean, Median, and Mode preprocessing showed promise in specific cases, Total Variation Inpainting emerged as the most robust approach overall. This suggests that when high-quality image restoration is required, especially in scenarios involving realistic image corruption, Total Variation Inpainting should be the preferred method. Furthermore, the experiments highlight the importance of selecting the appropriate imputation technique based on the image characteristics and the desired level of detail recovery.
 
 ## Citations
 
