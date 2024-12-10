@@ -53,10 +53,10 @@ To reproduce the results of the imputation experiments, follow these steps:
       - These visualizations help assess the performance of different ranks in the PCA-based imputation process.
   6. Visualizing the Results
     - To compare the imputation results visually, follow these steps:
-    - Generated Images:
+    1. Generated Images:
       - Go to the Home Page (top left) and scroll down to Generated Images.
       - Here, you will see the images generated after applying the imputation technique, along with their corresponding PSNR and SSIM scores.
-    - Compare Imputation Methods:
+    2. Compare Imputation Methods:
       - You can also visualize PSNR, SSIM, and semi-log PSNR graphs by clicking on "Compare Imputation Methods" (top right).
       - This will display a comparison of the different imputation methods and their corresponding metrics.
 ## Note: Images used can be found in the /images directory.
