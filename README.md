@@ -114,17 +114,17 @@ We implemented this method using CVXPY and unfortunately received results far in
 The noise component is not sparse: the corruption occurs in approximately 70% of the pixels onscreen, which means that the corruption occupies actually a very dense subset of the matrix entries. Thus, the underlying assumption that the model is low-rank plus sparse is violated. 
 The problem is extremely high-dimensional: CVXPY solves problems using interior-point methods which require the construction of a Hessian matrix. This means that the resulting solution process is not only slow, but incredibly memory-hungry. We also implemented custom first-order and proximal algorithms for solving this problem using singular-value thresholding, but the results were equally poor in terms of reconstruction quality. 
 # Imputation Methods Performance Analysis
-**Turtle SSIM and semi log PSNR values**
+**Turtle SSIM and Semi-log PSNR values**
 
 ![semi-log PSNR for Turtle](imageDisplay/turtlesemi-logpsnr.JPG)
 ![SSIM for Turtle](imageDisplay/turtlessim.JPG)
 
-**Spiritomb SSIM and semi log PSNR values**
+**Spiritomb SSIM and Semi-log PSNR values**
 ![semi-log PSNR for Spiritomb](imageDisplay/spiritombsemi-logpsnr.JPG)
 ![SSIM for Spiritomb](imageDisplay/spiritombssim.JPG)
 For most images, mean, median, and mode imputation methods produced significantly lower results, as observed in the semi-log evaluation of PSNR and the SSIM graph. This is expected, as these methods generally fill in missing pixels by using simple statistical measures (mean, median, or mode) without considering the underlying structure or global features of the image. While these methods can recover some of the missing data, they tend to lose finer details and textures, which results in poorer SSIM scores. PSNR, on the other hand, might still show reasonable values for these methods if the overall error in pixel values is small, especially for images with large homogeneous areas.
 In contrast, we would expect PCA, TV inpainting, and PCA with summary statistic preprocessing to perform better because they capture the low dimensionality of the data while taking into account more global features of the image.  
-**Pikachu SSIM and semi log PSNR values**
+**Pikachu SSIM and Semi-log PSNR values**
 ![semi-log PSNR for Pikachu](imageDisplay/pikachusemi-logpsnr.JPG)
 ![SSIM for Pikachu](imageDisplay/pikachussim.JPG)
 However, for this specific image (Pikachu), median and mode imputation methods ranked as the third and second-best performing in terms of PSNR, respectively. This is somewhat unexpected given the usual lower performance of these methods. The large homogeneous areas in the image (e.g., Pikachu’s yellow body) make median and mode imputation more effective, as these methods can replace missing pixels with values that closely match the surrounding region. This reduces the overall pixel-wise error, which is why they perform relatively well in PSNR evaluation.
