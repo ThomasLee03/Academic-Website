@@ -1,139 +1,147 @@
-# Link to project presentation video:
+# Starting the Server
+There are two ways to start the server for testing the application:
+## Option 1: Step-by-Step Commands
+  1. Activate the Virtual Environment:
+    - Run the following command to set up and activate the virtual environment:
+    - make venv
+  2. Install Dependencies:
+    - After activating the virtual environment, run the following command to install the necessary dependencies:
+    - make install
+  3. Run the Application:
+    - Once the dependencies are installed, start the application with:
+    - make run
+## Option 2: Automated Setup
+  - Alternatively, you can use a single command that sets up the environment, installs the dependencies, and runs the application:
+    - make setup
 
-https://www.awesomescreenshot.com/video/33205243?key=4d0521e571180edc44133689840d63e3
+# Sign-in Information
+Before testing the app, you need to sign in with the following credentials:
+Username: thomas
+Password: Th0mas123
+# Reproducing the Results
+To reproduce the results of the imputation experiments, follow these steps:
+  1. Upload the Image:
+    - Click on Upload Image and select an image to upload.
+    - Choose a corruption level of 70 from the provided slider.
+    - Click Upload.
+  2. View the Images:
+    - After uploading, you will see the original image, corrupted image, and the mask that was applied to the original image.
+  3. Select the Imputation Method:
+    - Select an imputation method from the available options:
+      - Mean
+      - Median
+      - Mode
+      - PCA
+      - Total Variation in Painting
+      - Imputation Method with PCA Preprocessing
+## Note: When selecting the Imputation Method with PCA Preprocessing, only choose Mean, Median, or Mode. The PCA preprocessing is designed specifically for these methods and will cause an error if applied with other imputation methods.
+  4. Generate the Imputation:
+    - Click on Generate to apply the imputation method.
+    - Note that PCA, Total Variation in Painting, and PCA Preprocessing methods may take a bit of time to complete (up to 5 minutes). During this time, the server will appear to be loading.
+    - You can monitor the progress of the imputation method in the terminal where basic output logs are provided, showing the progression of the process.
+  5. Re-apply Imputation to Another Image:
+    - After generating an imputation, you can apply a different imputation method to the same or a new image by:
+      - Clicking on Impute Another Image.
+      - Select an already inputted image, which is tied to the mask and corrupted image.
+      - Choose a new imputation method from the available options.
+    - View Trends and Visualizations:
+      - For PCA imputation or mean/median/mode preprocessing with PCA imputation, you will be able to see visualizations of the trends for PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores with rank.
+      - These visualizations help assess the performance of different ranks in the PCA-based imputation process.
+  6. Visualizing the Results
+    - To compare the imputation results visually, follow these steps:
+    - Generated Images:
+      - Go to the Home Page (top left) and scroll down to Generated Images.
+      - Here, you will see the images generated after applying the imputation technique, along with their corresponding PSNR and SSIM scores.
+    - Compare Imputation Methods:
+      - You can also visualize PSNR, SSIM, and semi-log PSNR graphs by clicking on "Compare Imputation Methods" (top right).
+      - This will display a comparison of the different imputation methods and their corresponding metrics.
+## Note: Images used can be found in the /images directory.
 
-# Project Report: Evaluating Imputation Techniques for Image Restoration
+# Model Evaluation
+We use two metrics primarily to evaluate the quality of the reconstructed image. Visually, we can make qualitative judgments by seeing if there are any obvious visual artifacts in the resulting reconstruction, i.e. are there still any obvious areas of image corruption after the reconstruction process. 
 
-In this project, I initially aimed to use the CIFAR-10 dataset to test various imputation techniques on corrupted images. However, CIFAR-10’s 32x32 resolution proved insufficient for visually assessing the restoration quality due to its low resolution. To facilitate more effective visual evaluations, I chose a higher-resolution dataset featuring images of Pokémon, with resolutions ranging between 280x210 and 400x400 pixels. This resolution provided the necessary detail to better analyze the imputation methods.
+A more quantitative approach involves using the peak-signal-to-noise ratio (PSNR) as well as the structural similarity index measure (SSIM). PSNR measures the fidelity of the restored image, with higher values indicating closer resemblance to the original. SSIM evaluates structural similarity, with values close to 1 indicating high similarity.
 
-For this report, I focused on a single image, corrupted it, and then applied several imputation techniques to assess each method's effectiveness in restoring the image.
+# Elementary Imputation Techniques with summary statistics
 
-## Original and Corrupted Images
+In the context of matrix completion, the mean, median, and mode imputation methods are basic statistical techniques used to fill in missing or corrupted pixel values based on the available (non-corrupted) pixels. These methods are typically applied to handle missing data in the image matrix, where a corrupted pixel (e.g., black or white pixels) needs to be replaced by a reasonable estimate based on neighboring pixels.
 
-Below is the original image used in this experiment:
+The missing value is replaced by the mean / mean / mode of the neighboring pixels or the non-corrupted pixels in the column. The mean represents the average pixel intensity in the column of the corrupted pixel.
 
-![Original Image](imageDisplay/originalImage.jpg)
+We do not expect these methods to produce quality images, but we use them as a visual baseline to compare more sophisticated methods against. Moreover, using summary statistics as a way of matrix completion is common in numerical datasets since it is fast and easy to implement. 
 
-To simulate data corruption, I randomly selected a specified percentage of pixels and set those pixels to black.
+# Principal Component Analysis Imputation
 
-![Corrupted Image](imageDisplay/corruptedImage.jpg)
+Principal Component Analysis (PCA) is a powerful statistical technique that reduces the dimensionality of data by transforming it into a set of linearly uncorrelated variables, known as principal components. These principal components are computed via the singular value decomposition (SVD) of the image matrix, and a low-rank representation of the image is learned via truncation of the singular vectors corresponding to lower singular values. 
 
-To track which pixels were corrupted, I created a mask where `0` (white) indicates corrupted pixels, and `1` (black) represents uncorrupted pixels:
+In this project, we adopt an alternating minimization approach for the purpose of image / matrix completion. In this setting, the matrix is initialized by filling in arbitrary values for the unknown pixels. Subsequently, PCA / SVD is performed to extract the top k components as a low-rank reconstruction. This comes from the assumption that structured image data tends to be low rank in nature, and that the PCA procedure removes the noise present in the corruption. Afterwards, because the principal component truncation also modifies the original known pixels as well, they are filled in with the original values. 
 
-![Corruption Mask](imageDisplay/Mask.jpg)
+This process iterates until the change in Frobenius norm of the pixel images between two iterations is below a given threshold or until a specified number of maximum interactions. This procedure is repeated for all three color channels of an RGB image, and the results are superimposed to create the final completed color image. 
 
-## Imputation Techniques and Evaluation Metrics
+# PCA Preprocessing with Mean, Median, or Mode Imputation
 
-I applied various imputation techniques, including mean, median, mode, PCA, and Total Variation (TV) inpainting. Each technique was evaluated using both **Peak Signal-to-Noise Ratio (PSNR)** and **Structural Similarity Index (SSIM)**, alongside a visual assessment. PSNR measures the fidelity of the restored image, with higher values indicating closer resemblance to the original. SSIM evaluates structural similarity, with values close to 1 indicating high similarity.
+Before applying PCA-based imputation, it is often useful to apply a basic imputation technique like mean, median, or mode imputation to handle the initial corruption. The rationale behind this is that PCA is more effective when the missing values are filled with reasonable estimates, which can help avoid the introduction of noise from grossly corrupted pixels. This is essentially a combination of the naive techniques introduced earlier with PCA to create a better starting iterate for the PCA algorithm. 
 
-### Mean, Median, and Mode Imputation Techniques
+# Convex Optimization: Total Variation Inpainting
 
-For each corrupted pixel, I replaced missing values based on the specified averaging technique (mean, median, or mode) calculated from the column values. Although I initially considered using a KNN variation, where I choose the nearest k pixels of the corrupted pixel to imputate the corrupted pixels, however this approach was computationally prohibitive.
+Convex optimization is a celebrated field of tractable optimization problems with fast algorithms and strong theoretical foundations. Many problems in statistics, machine learning, signal processing, can be reduced to minimizing a convex function over a convex constraint set, where the resulting optimization problem can then be efficiently solved by interior point methods. Primarily, convex optimization-based approaches are nice because 1) any local optimum is a global optimum and 2) strong duality holds under relatively weak conditions, providing a certificate of optimality for our solution.
 
-Below are the visual results for the three imputation techniques:
+Total variation inpainting is one such technique that has seen incredible promise in image and signal reconstruction. The total variation of a matrix \( X \in \mathbb{R}^{m \times n} \) is given by:
 
-![Mean Imputed Image](imageDisplay/ImageRecoveredbyMean.png)
-![Median Imputed Image](imageDisplay/ImageRecoveredbyMedian.png)
-![Mode Imputed Image](imageDisplay/ImageRecoveredbyMode.png)
+\[
+TV(X) = \sum_{i=1}^{m-1} \sum_{j=1}^{n-1} \left\| \begin{bmatrix} X_{i+1,j} - X_{i,j} \\ X_{i,j+1} - X_{i,j} \end{bmatrix} \right\|_2.
+\] 
 
-- **Mean Imputation** yielded a PSNR of approximately 7.075 and an SSIM of 0.074. These values are low, suggesting poor fidelity and structural similarity with the original image. The resulting image looks patchy, indicating limited recovery quality.
-  
-- **Median Imputation** produced a similar result with a PSNR of ~6.924 and SSIM of ~0.073. The similarity in outcomes suggests minimal deviation between mean and median values across columns in this image.
+Mathematically, the total variation measures the sum of the norms of discretized gradients across the image. Intuitively, the total variation measures smoothness across an image, and we use the idea that corrupted image pixels should roughly follow this smoothness pattern as well. However, one surprising property of the total variation function is that minimization still preserves sharp corners in the image instead of blurring or smoothening them out.
 
-- **Mode Imputation** performed slightly worse, with a PSNR of ~6.371 and SSIM of ~0.062. The imputed image displays noticeable "spotting" or white holes, likely due to blank spaces in those columns and the dense black area (the eye) in the center.
+The most attractive feature of the total variation norm is that it is convex in its matrix argument. Namely, our optimization problem can be cast as follows: we find the matrix (representing one channel of our image) with minimal total variation subject to an affine equality constraint, i.e. the known pixels of our corrupted image occupy the corresponding entry of X. This allows us to specify the problem naturally in convex optimization libraries. 
 
-### PCA Imputation
+The TV inpainting is implemented using the CVXPY optimization library. CVXPY allows the user to specify the optimization in a natural way following the grammar of Disciplined Convex Programming (DCP) rules. These are composition rules that ensure that the resulting problem is indeed convex and thus compatible with the backend solvers that perform the actual interior point methods for convex problems in some standard conic form. 
 
-Applying Singular Value Decomposition (PCA) allowed for low-rank approximations of the corrupted image, using ranks ranging from 1 to 91 with up to 50 iterations per rank. This method slightly improved PSNR and SSIM but introduced visible artifacts. Below are the images with the highest SSIM and PSNR values.
+The following steps are followed:
 
-![Best SSIM Image](imageDisplay/BestSSIM_0.09413908931120762.jpg)
+The CVXPY Variables are defined as three matrices, each representing a color channel of our output image.
+The constraints ensure that the corrupted pixels remain as they are, while the missing pixels are in-painted to minimize the total variation. This is done using an element-wise multiplication of the corrupted pixel bitmask against the problem variables and setting them equal to the corrupted image. 
+Optimization: The optimization problem is solved using the SCS solver to convert the problem to a standard conic form and then solved with an interior point method. 
 
-The image with the highest SSIM value (~0.094 at rank 51) performed better structurally compared to the previous techniques. While the internal structure is well-preserved, the outer areas display rainbow artifacts, likely due to reconstructing each RGB channel independently.
+# Other attempts: Robust PCA: Decomposition as low-rank plus sparse
 
-![Best PSNR Image](imageDisplay/BestPSNR_7.141992112936588dB.jpg)
+Another technique that has received recent attention is robust PCA, decomposing a matrix as a sum of a low rank component and a sparse component. Mathematically, for a data matrix M, we seek matrices L and S such that M = L + S, L is low rank, and S is sparse. We hypothesized that the low rank component L will correspond to the uncorrupted image, while the sparse component S will correspond to locations of image corruption. This can be found as the solution to the following optimization problem:
 
-The best PSNR value (~7.142 at rank 11) produced a similar reconstruction with fewer artifacts within the shape but still showed rainbow-colored pixels in the background. This effect likely arises from independently reconstructing each color channel, resulting in color artifacts in blank areas where the low-rank approximation struggles.
+minimize rank(L) + λ * nnz(S)
+subject to L + S = M
 
-I observed that the optimal recovery ranks differed between PSNR and SSIM, prompting me to explore how each metric varies with rank. The graphs below illustrate the relationship between rank and these evaluation metrics.
+Here, ‘nnz’ refers to the number of nonzero elements of S and λ is a trade-off parameter between the two competing objectives. 
 
-![PSNR vs Rank](imageDisplay/PSNR_vs_RankSpiritomb.png)
-![SSIM vs Rank](imageDisplay/SSIM_vs_RankSpiritomb.png)
+This technique has been historically successful in separation problems such as separating an unmoving background from a moving person in video surveillance footage. In some ways, it functions as a richer generalization of the matrix completion problem. While low-rank and sparsity constraints are nonconvex, convex relaxations of the rank constraint as the nuclear norm and the l-1 norm prove to be effective and even exact under some technical conditions. 
 
-Interestingly, the relationship between SSIM and PSNR with rank follows a parabolic shape, peaking at different ranks. This suggests that structural similarity (SSIM) and fidelity (PSNR) may prioritize different aspects of the image.
+We implemented this method using CVXPY and unfortunately received results far inferior to any other method mentioned before, both visually and computationally. This is likely due to a number of issues.
 
-### Total Variation Inpainting
-
-Lastly, I applied Total Variation (TV) inpainting, which aims to minimize intensity variation while preserving edges. This method yielded the most promising results.
-
-![TV Inpainting Image](imageDisplay/ImageRecoveredbyTV.png)
-
-TV inpainting produced a nearly indistinguishable image from the original, with an PSNR of ~34.141, significantly outperforming the other methods. However, the SSIM was surprisingly low at ~0.096. This discrepancy can be attributed to:
-- **Structural Sensitivity of SSIM**: SSIM is sensitive to small structural changes, and TV inpainting may smooth fine details or introduce minor edge shifts that affect the SSIM value.
-- **Luminance and Contrast Differences**: TV inpainting might slightly adjust intensity and contrast levels, which can reduce SSIM, even if the overall image is visually similar.
-
-### Testing on Real Images
-
-I hypothesized that many of the artifacts such as rainbow scattering and the white and black spots are attributed to unrealistic images, so I decieded to test the different imputation techniques on some more realistic images. For an example, I chose an image of a cat
-
-![Cat Original Image](imageDisplay/CAToriginalImage.jpg)
-
-With the corrupted the image to be:
-
-![Cat Corrupted Image](imageDisplay/CATcorruptedImage.jpg)
-
-While testing mean, median, and mode imputation, I noticed that although we visually do not see much better performance, the SSIM and PSNR values rose significantly.
-
-![Cat Mean Imputation Image](imageDisplay/CATImageRecoveredbyMean.png)
-
-This is mean imputation, where we observed a SSIM and PSNR value of ~19.302 and an PSNR value of ~0.408. 
-
-![Cat Median Imputation Image](imageDisplay/CATImageRecoveredbyMedian.png)
-
-This is the median imputation, and here we begin to observe different results from the mean imputation technique. Here, we acquired an SSIM value of ~0.442 and a PSNR value of ~18.906. 
-
-![Cat Mode Imputation Image](imageDisplay/CATImageRecoveredbyMode.png)
-
-The mode imputation, however seems to be doing just as worse as it was with the unrealistic photos (relative to the other two imputated images). Testing on realistic images has led me to see that my hypothesis of the utilizing realistic images to minimize the visual artifacts (such as white splots) was false. 
-
-Although it did not reduce the white spots, we see visually much better performance with PCA imputation. 
-
-![Cat PCA imputation Image](imageDisplay/CATBestPSNR_32.33976443605856dB.jpg)
-
-I calculated the SSIM to be ~33.030 and the SSIM value to be 0.932, which is considerably better than what we found for the unrealistic image. Here, we noticed much less rainbow scattering, with it only occuring in areas close to white. This observation soldified that rainbow scattering happens in areas close to (255, 255, 255). However a new artifact displayed in the left side (the red splotch). My guess is that it is SVD's tendency to reproduce dominant colors and structures across the image during reconstruction. Since the nose in the middle is the only object that is red, it might be considered a key pattern in the image. 
-
-What was interesting was that the distribution of the relationship between the metrics (PSNR and SSIM) and rank changed.
-
-![PSNR vs. Rank Image](imageDisplay/PSNR_vs_Rank.png)
-
-![SSIM vs. Rank Image](imageDisplay/SSIM_vs_Rank.png)
-
-We see that it doesn't necessarily follow a parabolic curve, but rather a unique distribution. It was particularly interesting that the max for both distributions resulted in a rank of 21 as well. 
-
-Total variation in painting, as expected, did the best.
-
-![Cat from TV Image](imageDisplay/CATImageRecoveredbyTV.png)
-
-The PSNR was as expected (~41.802), however it was very interesting to note that the SSIM value was ~0.984, My guess is that since we don't have such harsh changes in the pixel values (like the white background or solid colors without blending based on light), we see considerable performance. 
-
-## Future Directions
-
-Moving forward, I plan to explore additional approaches and techniques:
-
-- **Preprocessing with Averaging Techniques**: Applying mean, median, or mode imputation as a preprocessing step before PCA could potentially reduce the rainbow artifacting. Black pixels (0,0,0) in corrupted areas may be disproportionately influencing the approximation. By imputing these areas with average values first, I hope to achieve a more stable low-rank approximation.
-
-- **Robust PCA**: I plan to investigate Robust PCA, which is reportedly effective in handling grossly corrupted observations. This method might handle corrupted pixels more gracefully, potentially reducing artifacts and improving both PSNR and SSIM.
-- **Wavelet Transform-Based Inpainting**: Decomposing the image into wavelet components and targeting specific frequency bands for inpainting could allow for selective smoothing that retains texture and details.
-
-- **Convolutional Autoencoders**: Using a pre-trained or custom-trained convolutional autoencoder to impute missing pixels could benefit complex patterns, learning image-specific features that improve imputation accuracy.
-
-Each of these techniques could provide unique advantages in handling specific types of corruption or structures within images. My goal is to evaluate and compare these methods in terms of both visual quality and quantitative metrics like PSNR and SSIM to identify the most effective imputation strategies for image restoration.
-
-To improve user interaction, I also aim to enhance my application’s functionality by allowing clients to manually select regions they wish to mark as "corrupted." This feature would give users control over which areas they want to visualize as restored. For instance, a user could select a lamppost in an image as the corrupted area and observe how Total Variation (TV) inpainting or other methods attempt to “remove” or restore that region.
-
-## Citations
-
-- [Image Restoration Using Convolutional Auto-encoders with Symmetric Skip Connections](https://arxiv.org/pdf/1606.08921v3)
-- [Robust Principal Component Analysis](https://arxiv.org/pdf/0912.3599)
-- [WaveFill: A Wavelet-based Generation Network for Image Inpainting](https://arxiv.org/pdf/2107.11027)
-- [Understanding Image Quality Assessment Metrics: CR, PSNR, and SSIM](https://medium.com/@jradzik4/understanding-image-quality-assessment-metrics-cr-psnr-and-ssim-76ffa82d81ff)
-- [Total variation in-painting](https://www.cvxgrp.org/cvx_short_course/docs/intro/notebooks/tv_inpainting.html)
+The noise component is not sparse: the corruption occurs in approximately 70% of the pixels onscreen, which means that the corruption occupies actually a very dense subset of the matrix entries. Thus, the underlying assumption that the model is low-rank plus sparse is violated. 
+The problem is extremely high-dimensional: CVXPY solves problems using interior-point methods which require the construction of a Hessian matrix. This means that the resulting solution process is not only slow, but incredibly memory-hungry. We also implemented custom first-order and proximal algorithms for solving this problem using singular-value thresholding, but the results were equally poor in terms of reconstruction quality. 
+# Imputation Methods Performance Analysis
+![semi-log PSNR for Turtle](imageDisplay/turtle semi-logpsnr.jpg)
+![SSIM for Turtle](imageDisplay/corruptedImage.jpg)
+![semi-log PSNR for Spiritomb](imageDisplay/corruptedImage.jpg)
+![SSIM for Spiritomb](imageDisplay/corruptedImage.jpg)
+For most images, mean, median, and mode imputation methods produced significantly lower results, as observed in the semi-log evaluation of PSNR and the SSIM graph. This is expected, as these methods generally fill in missing pixels by using simple statistical measures (mean, median, or mode) without considering the underlying structure or global features of the image. While these methods can recover some of the missing data, they tend to lose finer details and textures, which results in poorer SSIM scores. PSNR, on the other hand, might still show reasonable values for these methods if the overall error in pixel values is small, especially for images with large homogeneous areas.
+In contrast, we would expect PCA, TV inpainting, and PCA with summary statistic preprocessing to perform better because they capture the low dimensionality of the data while taking into account more global features of the image.  
+![semi-log PSNR for Pikachu](imageDisplay/corruptedImage.jpg)
+![SSIM for Pikachu](imageDisplay/corruptedImage.jpg)
+However, for this specific image (Pikachu), median and mode imputation methods ranked as the third and second-best performing in terms of PSNR, respectively. This is somewhat unexpected given the usual lower performance of these methods. The large homogeneous areas in the image (e.g., Pikachu’s yellow body) make median and mode imputation more effective, as these methods can replace missing pixels with values that closely match the surrounding region. This reduces the overall pixel-wise error, which is why they perform relatively well in PSNR evaluation.
+Despite their reasonable PSNR performance, median and mode imputation methods ranked among the lowest when it came to SSIM. This can be attributed to the fact that these methods do not take into account the structural and local patterns in the image, such as edges, textures, and fine details. SSIM measures the structural similarity between images, and since median and mode imputation methods fail to preserve these local features, they result in poor SSIM scores. In contrast, methods like PCA and TV inpainting are able to maintain the image’s structure and texture, leading to better SSIM performance.
+# Further analysis on PCA Imputation with summary statistic preprocessing
+An interesting finding was that PCA produced comparable results with PCA and mean/median/mode initialization. This is likely because PCA is already effective at capturing the underlying structure of the image and can extract the most important features from the data. Since PCA is designed to reduce dimensionality and focus on the key components of the image, the preprocessing steps (mean, median, or mode imputation) don't significantly enhance its performance. While these preprocessing methods provide a basic estimate of the missing data, they don't improve the ability of PCA to identify and refine the core features of the image. Therefore, PCA alone can still achieve strong results, making the additional preprocessing unnecessary for improving performance.
+![SSIM for pikachu](imageDisplay/corruptedImage.jpg)
+![PSNR for pikachu](imageDisplay/corruptedImage.jpg)
+![SSIM for cat](imageDisplay/corruptedImage.jpg)
+![PSNR for cat](imageDisplay/corruptedImage.jpg)
+![SSIM for turtle](imageDisplay/corruptedImage.jpg)
+![PSNR for turtle](imageDisplay/corruptedImage.jpg)
+![SSIM for spiritomb](imageDisplay/corruptedImage.jpg)
+![PSNR for spiritomb](imageDisplay/corruptedImage.jpg)
+When analyzing the peak of the PSNR and SSIM scores, the optimal rank for reconstruction for all of them landed somewhere between 10-20. And almost all, except one of my findings, showed that the rank chosen with the best PSNR and the rank chosen with the best SSIM score were the same rank. This could be because the PSNR and SSIM scores, despite being distinct metrics, are often correlated when it comes to image quality. Both metrics aim to measure how well the reconstructed image matches the original image, albeit from different perspectives (PSNR from a pixel-wise error perspective and SSIM from a structural similarity perspective). Thus, the rank that achieves the best performance in one metric is likely to perform well in the other, leading to similar optimal ranks for both PSNR and SSIM in most cases.
+What I found after conducting multiple experiments on realistic and cartoon images was that there was no exact pattern when it came to the trends of rank with PSNR and SSIM, only that there is a peak and then it decreases. This behavior can be attributed to the nature of low-rank approximations used in PCA. Initially, increasing the rank captures more features of the image, improving the imputation. However, beyond a certain rank, the model begins to capture noise and less relevant features, leading to overfitting. This results in a decline in performance as the rank increases further, which is reflected in both PSNR and SSIM scores.
+The differences in the graphs can be attributed to the image content and complexity. For realistic images, where there are more subtle textures and fine details, higher ranks may be needed to capture the necessary features, while animated images, which are often simpler and more uniform in structure, may not require as high a rank to achieve good results. Additionally, the nature of the image—whether it contains high-frequency details or smooth gradients—affects how the rank influences performance. The choice of rank must balance between capturing enough information to improve quality and avoiding overfitting by capturing irrelevant details.
+# Final Conclusions:
+After conducting extensive experiments with various imputation methods, it is clear that Total Variation Inpainting consistently outperformed other techniques across different types of images. This method demonstrated superior performance in terms of both PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores, making it the most reliable for restoring corrupted images. While other imputation methods such as PCA, Mean, Median, and Mode preprocessing showed promise in specific cases, Total Variation Inpainting emerged as the most robust approach overall. This suggests that when high-quality image restoration is required, especially in scenarios involving realistic image corruption, Total Variation Inpainting should be the preferred method. Furthermore, the experiments highlight the importance of selecting the appropriate imputation technique based on the image characteristics and the desired level of detail recovery.
