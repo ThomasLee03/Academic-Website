@@ -120,28 +120,28 @@ The problem is extremely high-dimensional: CVXPY solves problems using interior-
 For realistic images, we noticed that for mean and median imputation they produced visually similar immages:
 
 **Turtle Mean Imputed Image**
-![Turtle mean](imageDisplay/mean_imputed_noIBFvv.PNG)
+![Turtle mean](imageDisplay/mean_imputed_noIBFvv.png)
 
 **Turtle Median Imputed Image**
-![Turtle median](imageDisplay/median_imputed_PUfsm4H.PNG)
+![Turtle median](imageDisplay/median_imputed_PUfsm4H.png)
 
 This just tells us that for a specific column, the mean and median pixel value must be very close. This was further confirmed via the PSNR and SSIM scores (see below in the graphs). However, the mode displays these visual artifacts of "streaks". 
 
 **Turtle Mode Imputed Image**
-![Turtle mode](imageDisplay/turtlemode.PNG)
+![Turtle mode](imageDisplay/turtlemode.png)
 
 The poorer visual quality of the mode-imputed image is reflected in the lower SSIM scores. This outcome makes sense for realistic images, which typically have smooth gradients between pixels due to shading. In such cases, averaging (mean) or selecting the middle value (median) works best. On the other hand, mode imputation—filling in corrupted pixels with the most frequently occurring value—fails to capture these subtle gradients.
 
 For some animated images, however, we noticed mean did relitively worse than median and mode 
 
 **Pikachu Mean Imputed Image**
-![Pikachu mean](imageDisplay/mean_imputed_rF9v3jH.PNG)
+![Pikachu mean](imageDisplay/mean_imputed_rF9v3jH.png)
 
 **Pikachu Median Imputed Image**
-![Pikachu median](imageDisplay/imputed_UJOYYZZ.PNG)
+![Pikachu median](imageDisplay/imputed_UJOYYZZ.png)
 
 **Pikachu Mode Imputed Image**
-![Pikachu mode](imageDisplay/imputed_7PnRC2V.PNG)
+![Pikachu mode](imageDisplay/imputed_7PnRC2V.png)
 
 In this case, the streak artifacts are more prominent with mean imputation. Median and mode imputation produce cleaner results, which is also confirmed by the PSNR and SSIM scores (see graphs below). This difference is due to the nature of animated images, which often feature sharp contrasts between colors (e.g., Pikachu's yellow body against a white background) and a simpler color palette. Mean imputation tends to blur these contrasting colors, resulting in poor visual quality. In such cases, median or mode imputation preserves the sharp boundaries better than mean.
 
@@ -167,16 +167,16 @@ Despite their reasonable PSNR performance, median and mode imputation methods ra
 An interesting finding was that PCA produced comparable results with PCA and mean/median/mode initialization. This can be further confirmed via visual comparisons. 
 
 **Turtle PCA Imputed Image**
-![Turtle PCA Imputed Image](imageDisplay/PCA_SSIM_imputed_JdS1slh.PNG)
+![Turtle PCA Imputed Image](imageDisplay/PCA_SSIM_imputed_JdS1slh.png)
 
 **Turtle PCA Imputed Image with Mean Preprocessing**
-![Turtle PCA Imputed Image with Mean Preprocessing](imageDisplay/PCA_SSIM_imputed_jyOXMzc.PNG)
+![Turtle PCA Imputed Image with Mean Preprocessing](imageDisplay/PCA_SSIM_imputed_jyOXMzc.png)
 
 **Turtle PCA Imputed Image with Mean Preprocessing**
-![Turtle PCA Imputed Image with Median Preprocessing](imageDisplay/PCA_SSIM_imputed_WfKrRxg.PNG)
+![Turtle PCA Imputed Image with Median Preprocessing](imageDisplay/PCA_SSIM_imputed_WfKrRxg.png)
 
 **Turtle PCA Imputed Image with Mode Preprocessing**
-![Turtle PCA Imputed Image with Mode Preprocessing](imageDisplay/PCA_SSIM_imputed_YTQ1aO9.PNG)
+![Turtle PCA Imputed Image with Mode Preprocessing](imageDisplay/PCA_SSIM_imputed_YTQ1aO9.png)
 
 This is likely because PCA is already effective at capturing the underlying structure of the image and can extract the most important features from the data. Since PCA is designed to reduce dimensionality and focus on the key components of the image, the preprocessing steps (mean, median, or mode imputation) don't significantly enhance its performance. While these preprocessing methods provide a basic estimate of the missing data, they don't improve the ability of PCA to identify and refine the core features of the image. Therefore, PCA alone can still achieve strong results, making the additional preprocessing unnecessary for improving performance.
 
@@ -205,22 +205,22 @@ The differences in the graphs can be attributed to the image content and complex
 For the sake of brevity, this report will present only the generated images for the Turtle image using the following methods: Mean, Median, Mode, PCA (with the best SSIM), Total Variation Inpainting, and PCA with Mean Preprocessing (best SSIM).
 
 **Turtle Mean Imputed Image**
-![Turtle mean](imageDisplay/mean_imputed_noIBFvv.PNG)
+![Turtle mean](imageDisplay/mean_imputed_noIBFvv.png)
 
 **Turtle Median Imputed Image**
-![Turtle median](imageDisplay/median_imputed_PUfsm4H.PNG)
+![Turtle median](imageDisplay/median_imputed_PUfsm4H.png)
 
 **Turtle Mode Imputed Image**
-![Turtle mode](imageDisplay/turtlemode.PNG)
+![Turtle mode](imageDisplay/turtlemode.png)
 
 **Turtle PCA Imputed Image**
-![Turtle PCA Imputed Image](imageDisplay/PCA_SSIM_imputed_JdS1slh.PNG)
+![Turtle PCA Imputed Image](imageDisplay/PCA_SSIM_imputed_JdS1slh.png)
 
 **Turtle Total Variation in Painting Imputed Image**
-![Turtle Total Variation in Painting Imputed Image](imageDisplay/TV_inpainting_imputed_C569jH5.PNG)
+![Turtle Total Variation in Painting Imputed Image](imageDisplay/TV_inpainting_imputed_C569jH5.png)
 
 **Turtle PCA Imputed Image with Mean Preprocessing**
-![Turtle PCA Imputed Image with Mean Preprocessing](imageDisplay/PCA_SSIM_imputed_jyOXMzc.PNG)
+![Turtle PCA Imputed Image with Mean Preprocessing](imageDisplay/PCA_SSIM_imputed_jyOXMzc.png)
 
 Visually, PCA and PCA with Mean Preprocessing outperformed Mean, Median, and Mode imputation. Total Variation Inpainting delivered the best results, with no noticeable visual artifacts.
 
