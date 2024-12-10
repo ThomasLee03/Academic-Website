@@ -48,7 +48,7 @@ To reproduce the results of the imputation experiments, follow these steps:
       - Clicking on Impute Another Image.
       - Select an already inputted image, which is tied to the mask and corrupted image.
       - Choose a new imputation method from the available options.
-    - View Trends and Visualizations:
+      - View Trends and Visualizations:
       - For PCA imputation or mean/median/mode preprocessing with PCA imputation, you will be able to see visualizations of the trends for PSNR (Peak Signal-to-Noise Ratio) and SSIM (Structural Similarity Index) scores with rank.
       - These visualizations help assess the performance of different ranks in the PCA-based imputation process.
   6. Visualizing the Results
