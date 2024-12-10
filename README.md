@@ -1,3 +1,7 @@
+**Clarification Regarding the CS412 Folder in My Repository**
+
+I initially created the app using Django, a framework I learned in CS412. However, I encountered difficulties setting up the Django project structure entirely from scratch. For this final project, I leveraged the configuration and initialization code from my CS412 class to establish the basic Django skeleton. Beyond that, I created the FinalProject app, Makefile, and requirements.txt specifically for this class.
+
 # Starting the Server
 There are two ways to start the server for testing the application:
 ## Option 1: Step-by-Step Commands
