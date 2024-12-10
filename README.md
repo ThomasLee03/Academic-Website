@@ -224,7 +224,7 @@ For the sake of brevity, this report will present only the generated images for 
 
 **Turtle Mode Imputed Image**
 
-![Turtle mode](imageDisplay/turtlemode.png)
+![Turtle mode](imageDisplay/turtlemode.JPG)
 
 **Turtle PCA Imputed Image**
 
