@@ -1,6 +1,6 @@
-## Starting the Server
+# Starting the Server
 There are two ways to start the server for testing the application:
-# Option 1: Step-by-Step Commands
+## Option 1: Step-by-Step Commands
   1. Activate the Virtual Environment:
     - Run the following command to set up and activate the virtual environment:
     - make venv
@@ -10,15 +10,15 @@ There are two ways to start the server for testing the application:
   3. Run the Application:
     - Once the dependencies are installed, start the application with:
     - make run
-# Option 2: Automated Setup
+## Option 2: Automated Setup
   - Alternatively, you can use a single command that sets up the environment, installs the dependencies, and runs the application:
     - make setup
 
-## Sign-in Information
+# Sign-in Information
 Before testing the app, you need to sign in with the following credentials:
 Username: thomas
 Password: Th0mas123
-## Reproducing the Results
+# Reproducing the Results
 To reproduce the results of the imputation experiments, follow these steps:
   1. Upload the Image:
     - Click on Upload Image and select an image to upload.
