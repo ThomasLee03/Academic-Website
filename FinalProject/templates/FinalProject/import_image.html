@@ -30,8 +30,23 @@
       <small class="form-text text-muted">Adjust the slider to set the corruption level.</small>
     </div>
 
-    <!-- Submit button to upload the image -->
+    <!-- Display the current corruption level -->
+    <div class="form-group">
+      <label for="corruption_level_display" class="h5">Current Corruption Level:</label>
+      <p id="corruption_level_display" class="form-control-static">30</p>
+    </div>
+
     <button type="submit" class="btn btn-primary mt-4">Upload</button>
   </form>
-  
+
+  <script>
+    // JavaScript to update the corruption level display when the slider changes
+    const slider = document.getElementById('corruption_level');
+    const output = document.getElementById('corruption_level_display');
+    
+    // Update the text display when the slider value changes
+    slider.oninput = function() {
+      output.innerHTML = this.value;
+    }
+  </script>
 {% endblock %}

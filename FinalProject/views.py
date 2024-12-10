@@ -312,7 +312,8 @@ def imputation_comparison(request):
             ax.set_title(f'PSNR')
             ax.set_xlabel('Imputation Method')
             ax.set_ylabel('PSNR')
-            plt.xticks(fontsize=6)
+            plt.xticks(fontsize=10,rotation=90)
+            plt.tight_layout() 
             # Save PSNR graph to buffer
             buf = BytesIO()
             plt.savefig(buf, format="png")
@@ -325,7 +326,8 @@ def imputation_comparison(request):
             ax.set_title(f'SSIM')
             ax.set_xlabel('Imputation Method')
             ax.set_ylabel('SSIM')
-            plt.xticks(fontsize=6)
+            plt.xticks(fontsize=10, rotation=90)
+            plt.tight_layout() 
             # Save SSIM graph to buffer
             buf = BytesIO()
             plt.savefig(buf, format="png")
@@ -333,11 +335,31 @@ def imputation_comparison(request):
             
             ssim_graph_content = ContentFile(buf.getvalue(), name=f'{original_image.image_file.name}_ssim.png')
 
+            # Create the semi-logarithmic PSNR graph (logarithmic scale for y-axis)
+            fig, ax = plt.subplots(figsize=(10, 4))
+            ax.bar(labels, psnr_values, color='green')
+            ax.set_title(f'Semi-Log PSNR')
+            ax.set_xlabel('Imputation Method')
+            ax.set_ylabel('PSNR (log scale)')
+            ax.set_yscale('log')  # Set the y-axis to logarithmic scale
+            plt.xticks(fontsize=10, rotation=90)
+            plt.tight_layout()
+
+            # Save the semi-logarithmic PSNR graph to buffer
+            buf = BytesIO()
+            plt.savefig(buf, format="png")
+            plt.close(fig)
+            semi_log_psnr_graph_content = ContentFile(buf.getvalue(), name=f'{original_image.image_file.name}_semi_log_psnr.png')
+
+    # Now you have both the original and semi-logarithmic PSNR graph images (psnr_graph_content and semi_log_psnr_graph_content) to pass to your template or save
+
+
             # Append the generated data (graphs and original image URL)
             bar_graphs.append({
                 'image_file': original_image.image_file.url,  # Use the URL of the original image
                 'psnr_graph': psnr_graph_content,
                 'ssim_graph': ssim_graph_content,
+                'semi_log_psnr_graph': semi_log_psnr_graph_content,
             })
 
     # Pass the generated bar graphs to the template

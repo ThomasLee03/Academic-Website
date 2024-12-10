@@ -24,6 +24,9 @@
       <!-- Display the PSNR graph -->
       <h4>PSNR</h4>
       <img src="data:image/png;base64,{{ graph.psnr_graph|base64encode }}" alt="PSNR Graph">
+
+      <h4>PSNR Log Transformed</h4>
+      <img src="data:image/png;base64,{{ graph.semi_log_psnr_graph|base64encode }}" alt="PSNR Graph">
       
       <!-- Display the SSIM graph -->
       <h4>SSIM</h4>
