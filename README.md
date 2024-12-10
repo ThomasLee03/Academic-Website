@@ -34,7 +34,7 @@ To reproduce the results of the imputation experiments, follow these steps:
       - PCA
       - Total Variation in Painting
       - Imputation Method with PCA Preprocessing
-# Important Note:
+## Important Note:
   - When selecting the Imputation Method with PCA Preprocessing, only choose Mean, Median, or Mode.
   - The PCA preprocessing is designed specifically for these methods and will cause an error if applied with other imputation methods.
   4. Generate the Imputation:
@@ -57,7 +57,7 @@ To reproduce the results of the imputation experiments, follow these steps:
     - Compare Imputation Methods:
       - You can also visualize PSNR, SSIM, and semi-log PSNR graphs by clicking on "Compare Imputation Methods" (top right).
       - This will display a comparison of the different imputation methods and their corresponding metrics.
-**Note that the images used can be found in the /images directory.**
+## Note that the images used can be found in the /images directory.
 
 # Model Evaluation
 We use two metrics primarily to evaluate the quality of the reconstructed image. Visually, we can make qualitative judgments by seeing if there are any obvious visual artifacts in the resulting reconstruction, i.e. are there still any obvious areas of image corruption after the reconstruction process. 
