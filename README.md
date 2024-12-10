@@ -115,28 +115,28 @@ The noise component is not sparse: the corruption occurs in approximately 70% of
 The problem is extremely high-dimensional: CVXPY solves problems using interior-point methods which require the construction of a Hessian matrix. This means that the resulting solution process is not only slow, but incredibly memory-hungry. We also implemented custom first-order and proximal algorithms for solving this problem using singular-value thresholding, but the results were equally poor in terms of reconstruction quality. 
 # Imputation Methods Performance Analysis
 **Turtle SSIM and semi log PSNR values**
-![semi-log PSNR for Turtle](imageDisplay/turtlesemi-logpsnr.jpg)
+![semi-log PSNR for Turtle](imageDisplay/turtlesemi-logpsnr.JPG)
 ![SSIM for Turtle](imageDisplay/turtlessim.jpg)
 **Spiritomb SSIM and semi log PSNR values**
-![semi-log PSNR for Spiritomb](imageDisplay/spiritombsemi-logpsnr.jpg)
+![semi-log PSNR for Spiritomb](imageDisplay/spiritombsemi-logpsnr.JPG)
 ![SSIM for Spiritomb](imageDisplay/spiritombssim.jpg)
 For most images, mean, median, and mode imputation methods produced significantly lower results, as observed in the semi-log evaluation of PSNR and the SSIM graph. This is expected, as these methods generally fill in missing pixels by using simple statistical measures (mean, median, or mode) without considering the underlying structure or global features of the image. While these methods can recover some of the missing data, they tend to lose finer details and textures, which results in poorer SSIM scores. PSNR, on the other hand, might still show reasonable values for these methods if the overall error in pixel values is small, especially for images with large homogeneous areas.
 In contrast, we would expect PCA, TV inpainting, and PCA with summary statistic preprocessing to perform better because they capture the low dimensionality of the data while taking into account more global features of the image.  
 **Pikachu SSIM and semi log PSNR values**
-![semi-log PSNR for Pikachu](imageDisplay/pikachusemi-logpsnr.jpg)
+![semi-log PSNR for Pikachu](imageDisplay/pikachusemi-logpsnr.JPG)
 ![SSIM for Pikachu](imageDisplay/pikachussim.jpg)
 However, for this specific image (Pikachu), median and mode imputation methods ranked as the third and second-best performing in terms of PSNR, respectively. This is somewhat unexpected given the usual lower performance of these methods. The large homogeneous areas in the image (e.g., Pikachu’s yellow body) make median and mode imputation more effective, as these methods can replace missing pixels with values that closely match the surrounding region. This reduces the overall pixel-wise error, which is why they perform relatively well in PSNR evaluation.
 Despite their reasonable PSNR performance, median and mode imputation methods ranked among the lowest when it came to SSIM. This can be attributed to the fact that these methods do not take into account the structural and local patterns in the image, such as edges, textures, and fine details. SSIM measures the structural similarity between images, and since median and mode imputation methods fail to preserve these local features, they result in poor SSIM scores. In contrast, methods like PCA and TV inpainting are able to maintain the image’s structure and texture, leading to better SSIM performance.
 # Further analysis on PCA Imputation with summary statistic preprocessing
 An interesting finding was that PCA produced comparable results with PCA and mean/median/mode initialization. This is likely because PCA is already effective at capturing the underlying structure of the image and can extract the most important features from the data. Since PCA is designed to reduce dimensionality and focus on the key components of the image, the preprocessing steps (mean, median, or mode imputation) don't significantly enhance its performance. While these preprocessing methods provide a basic estimate of the missing data, they don't improve the ability of PCA to identify and refine the core features of the image. Therefore, PCA alone can still achieve strong results, making the additional preprocessing unnecessary for improving performance.
 **Pikachu SSIM and PSNR graphs**
-![SSIM and PSNR for pikachu](imageDisplay/PCAconvergencegraphwithpikachu.jpg)
+![SSIM and PSNR for pikachu](imageDisplay/PCAconvergencegraphwithpikachu.JPG)
 **Cat SSIM and PSNR graphs**
-![PSNR and SSIM for cat](imageDisplay/PCAconvergencewithcatrealimage.jpg)
+![PSNR and SSIM for cat](imageDisplay/PCAconvergencewithcatrealimage.JPG)
 **Turtle SSIM and PSNR graphs**
-![SSIM and PSNR for turtle](imageDisplay/PCAconvergencewithturtlerealimage.jpg)
+![SSIM and PSNR for turtle](imageDisplay/PCAconvergencewithturtlerealimage.JPG)
 **Spiritomb SSIM and PSNR graphs**
-![SSIM and PSNR for spiritomb](imageDisplay/PCAconvergencewithturtlerealimage.jpg)
+![SSIM and PSNR for spiritomb](imageDisplay/PCAconvergencewithturtlerealimage.JPG)
 When analyzing the peak of the PSNR and SSIM scores, the optimal rank for reconstruction for all of them landed somewhere between 10-20. And almost all, except one of my findings, showed that the rank chosen with the best PSNR and the rank chosen with the best SSIM score were the same rank. This could be because the PSNR and SSIM scores, despite being distinct metrics, are often correlated when it comes to image quality. Both metrics aim to measure how well the reconstructed image matches the original image, albeit from different perspectives (PSNR from a pixel-wise error perspective and SSIM from a structural similarity perspective). Thus, the rank that achieves the best performance in one metric is likely to perform well in the other, leading to similar optimal ranks for both PSNR and SSIM in most cases.
 What I found after conducting multiple experiments on realistic and cartoon images was that there was no exact pattern when it came to the trends of rank with PSNR and SSIM, only that there is a peak and then it decreases. This behavior can be attributed to the nature of low-rank approximations used in PCA. Initially, increasing the rank captures more features of the image, improving the imputation. However, beyond a certain rank, the model begins to capture noise and less relevant features, leading to overfitting. This results in a decline in performance as the rank increases further, which is reflected in both PSNR and SSIM scores.
 The differences in the graphs can be attributed to the image content and complexity. For realistic images, where there are more subtle textures and fine details, higher ranks may be needed to capture the necessary features, while animated images, which are often simpler and more uniform in structure, may not require as high a rank to achieve good results. Additionally, the nature of the image—whether it contains high-frequency details or smooth gradients—affects how the rank influences performance. The choice of rank must balance between capturing enough information to improve quality and avoiding overfitting by capturing irrelevant details.
