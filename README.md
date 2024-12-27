@@ -19,7 +19,7 @@ There are two ways to start the server for testing the application:
     - make setup
 
 # Sign-in Information
-Before testing the app, you need to sign in with the following credentials:
+Before testing the app, you need to sign in with the following credentials: \n /n
 Username: thomas
 Password: Th0mas123
 # Reproducing the Results
