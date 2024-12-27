@@ -19,9 +19,12 @@ There are two ways to start the server for testing the application:
     - make setup
 
 # Sign-in Information
-Before testing the app, you need to sign in with the following credentials: \n /n
+Before testing the app, you need to sign in with the following credentials:
+
 Username: thomas
+
 Password: Th0mas123
+
 # Reproducing the Results
 To reproduce the results of the imputation experiments, follow these steps:
   1. Upload the Image:
